@@ -1,8 +1,14 @@
 ################################################
 # Trinity Core World Server configuration file #
 ################################################
+# Creature.CheckInvalidPosition = 0
+# Calculate.Creature.Zone.Area.Data = 0
 [worldserver]
 
+Guild.SaveInterval = 15
+CleanOldMailTime = 4
+
+###################################################################################################
 ###################################################################################################
 # SECTION INDEX
 #
@@ -890,17 +896,17 @@ StartPlayerLevel = 1
 #    StartDeathKnightPlayerLevel
 #        Description: Starting level for death knights after creation.
 #        Range:       1-MaxPlayerLevel
-#        Default:     8
+#        Default:     10
 
-StartDeathKnightPlayerLevel = 8
+StartDeathKnightPlayerLevel = 10
 
 #
 #    StartDemonHunterPlayerLevel
 #        Description: Staring level for demon hunters after creation.
 #        Range:       1-MaxPlayerLevel
-#        Default:     8
+#        Default:     10
 
-StartDemonHunterPlayerLevel = 8
+StartDemonHunterPlayerLevel = 10
 
 #
 #    StartAlliedRacePlayerLevel
@@ -1162,7 +1168,7 @@ MinQuestScaledXPRatio = 0
 
 #
 #    MinCreatureScaledXPRatio
-#        Description: Min ratio of experience that a creature kill can grant when player level scaling is factored.  This 
+#        Description: Min ratio of experience that a creature kill can grant when player level scaling is factored.  This
 #                     will also allow spell procs to trigger, such as Drain Soul, if > 0 and exp is grantable.
 #        Example:     50 (No less than 50% experience granted from a lower leveled creature kill)
 #                     100 (Creature kills always grant full experience upon kill)
