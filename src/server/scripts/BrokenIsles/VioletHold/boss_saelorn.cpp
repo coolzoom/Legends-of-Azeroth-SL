@@ -185,7 +185,7 @@ class npc_vha_phase_spider : public CreatureScript
                 }
             }
 
-            void IsSummonedBy(Unit* /**/) override
+            void IsSummonedBy(WorldObject* /**/) override
             {
                 if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 0, true))
                     DoCast(target, SPELL_CREEPING_SLAUGHTER);

@@ -1570,7 +1570,7 @@ class mob_freed_sri_la_villager : public CreatureScript
 
             uint32 timer;
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 timer = 3000;
             }
@@ -1719,7 +1719,7 @@ class mob_jade_cloud_serpent : public CreatureScript
                 events.ScheduleEvent(EVENT_CHECK_TARGET, 2000);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (Player* player = summoner->ToPlayer())
                     playerGUID = player->GetGUID();
@@ -1835,7 +1835,7 @@ class npc_cloud_ring : public CreatureScript
                 me->AddAura(129282, me);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (Player* player = summoner->ToPlayer())
                     playerGUID = player->GetGUID();
@@ -1975,7 +1975,7 @@ class mob_second_big_bao : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2114,7 +2114,7 @@ class mob_ace_longpaw : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2253,7 +2253,7 @@ class mob_ningha_darkwheel : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2392,7 +2392,7 @@ class mob_qua_row_whitebrow : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2531,7 +2531,7 @@ class mob_suchi_the_sweet : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }

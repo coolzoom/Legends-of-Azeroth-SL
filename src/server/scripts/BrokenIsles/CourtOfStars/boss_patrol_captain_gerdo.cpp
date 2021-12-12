@@ -387,7 +387,7 @@ class npc_cos_streetsweeper : public CreatureScript
                 DoCast(me, SPELL_STREETSWEEPER_VISUAL, true);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;

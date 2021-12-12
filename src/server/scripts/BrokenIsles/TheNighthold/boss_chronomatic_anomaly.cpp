@@ -403,7 +403,7 @@ public:
             _instance = creature->GetInstanceScript();
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             _ownerGuid = summoner->GetGUID();
             me->SetControlled(true, UNIT_STATE_ROOT);
@@ -487,7 +487,7 @@ public:
     {
         npc_fragmented_time_particleAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             me->SetControlled(true, UNIT_STATE_ROOT);
             DoCastSelf(SPELL_PASSAGE_OF_TIME);
@@ -547,7 +547,7 @@ public:
     {
         npc_temporal_riftAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void IsSummonedBy(Unit* /*summoner*/) override
+        void IsSummonedBy(WorldObject* /*summoner*/) override
         {
             DoCastSelf(SPELL_TEMPORAL_RIFT_VISUAL);
         }

@@ -302,7 +302,7 @@ struct npc_lightforged_beacon_129449 : public ScriptedAI
     };
     using Path01Size = std::extent<decltype(Path01)>;
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddNpcFlag(UNIT_NPC_FLAG_SPELLCLICK);
     }

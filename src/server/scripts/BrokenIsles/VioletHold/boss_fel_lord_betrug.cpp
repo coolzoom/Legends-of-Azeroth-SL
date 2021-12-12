@@ -235,7 +235,7 @@ class npc_vha_stasis_crystal : public CreatureScript
                 _summoner = nullptr;
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;

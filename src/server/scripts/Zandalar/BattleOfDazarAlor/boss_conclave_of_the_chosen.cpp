@@ -496,7 +496,7 @@ struct npc_paku_conclave : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->CanFly();
@@ -527,7 +527,7 @@ struct npc_gonk_conclave : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->CastSpell(nullptr, SPELL_GONKS_WRATH, false);
@@ -550,7 +550,7 @@ struct npc_kimbul_conclave : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->GetScheduler().Schedule(1s, [this] (TaskContext context)
@@ -607,7 +607,7 @@ struct npc_akunda_conclave : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);       
         UnitList tar_li;
@@ -638,7 +638,7 @@ struct npc_ravenous_stalker : public ScriptedAI
         ScriptedAI::Reset();
     }
 
-    void IsSummonedBy(Unit* summoner)
+    void IsSummonedBy(WorldObject* summoner)
     {
         me->AI()->DoZoneInCombat(nullptr);        
     }
@@ -675,7 +675,7 @@ struct npc_kragwa : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->GetScheduler().Schedule(1s, [this](TaskContext context)
@@ -732,7 +732,7 @@ struct npc_bwonsamdi_conclave : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         Talk(SAY_BWONSAMDIS_WRATH);
         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0, 100.0f, true))

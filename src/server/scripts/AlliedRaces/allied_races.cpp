@@ -146,7 +146,7 @@ public:
             {
                 Player* player = NULL;
                 if (me->IsSummon())
-                    if (Unit* summoner = me->ToTempSummon()->GetSummoner())
+                    if (WorldObject* summoner = me->ToTempSummon()->GetSummoner())
                         player = summoner->ToPlayer();
 
                 if (!player)

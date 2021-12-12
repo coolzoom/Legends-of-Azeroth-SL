@@ -147,7 +147,7 @@ struct npc_brh_felbat : public ScriptedAI
         me->SetSpeed(MOVE_FLIGHT,   0.1f);
     }
 
-    void IsSummonedBy(Unit* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/) override
     {
         me->GetScheduler().Schedule(5s, [this](TaskContext context)
         {

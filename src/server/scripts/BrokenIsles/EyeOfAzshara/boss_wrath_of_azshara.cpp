@@ -665,7 +665,7 @@ class npc_eoa_arcane_bomb : public CreatureScript
                     me->CastSpell(target, SPELL_MAGIC_RESONANCE, true);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;

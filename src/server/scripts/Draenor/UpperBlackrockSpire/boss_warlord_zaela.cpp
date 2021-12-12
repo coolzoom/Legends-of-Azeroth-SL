@@ -341,7 +341,7 @@ struct npc_emberscale_ironflight : public CreatureAI
         }
     }
 
-    void IsSummonedBy(Unit* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/) override
     {
         if (me->GetEntry() == NPC_EMBERSCALE_IRONFLIGHT_2)
         {
@@ -436,7 +436,7 @@ struct npc_emberscale_matron : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         zaelaGUID = summoner->GetGUID();
 

@@ -202,7 +202,7 @@ public:
         uint32 timer;
         bool movein;
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             Player* player = summoner->ToPlayer();
 

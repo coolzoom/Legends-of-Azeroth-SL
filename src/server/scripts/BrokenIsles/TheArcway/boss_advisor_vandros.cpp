@@ -248,7 +248,7 @@ class npc_arc_chrono_shard : public CreatureScript
                 me->CastSpell(me, SPELL_CHRONO_SHARD_SPAWN, true);
             }
 
-            void IsSummonedBy(Unit* /**/) override
+            void IsSummonedBy(WorldObject* /**/) override
             {
                 me->CastSpell(me, SPELL_CHRONO_SHARD_PULSE, true);
                 me->GetMotionMaster()->MovePoint(0, me->GetRandomNearPosition(25));

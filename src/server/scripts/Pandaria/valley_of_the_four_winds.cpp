@@ -878,7 +878,7 @@ class mob_nomi : public CreatureScript
         {
             mob_nomiAI(Creature* creature) : ScriptedAI(creature) {}
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 std::list<Creature*> creatureList;
                 GetClosestCreatureWithEntry(summoner, NPC_NOMI, 20.0f, true);

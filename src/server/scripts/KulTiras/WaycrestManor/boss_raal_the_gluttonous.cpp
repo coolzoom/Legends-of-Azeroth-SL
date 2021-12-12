@@ -196,7 +196,7 @@ struct npc_wasting_servant : public ScriptedAI
 		ScriptedAI::Reset();
 	}
 
-	void IsSummonedBy(Unit* u)
+	void IsSummonedBy(WorldObject* u)
 	{		
 		me->SetReactState(REACT_PASSIVE);
 		me->SetWalk(true);

@@ -218,7 +218,7 @@ class npc_vha_squirrel_bomb : public CreatureScript
             npc_vha_squirrel_bomb_AI(Creature* creature) : ScriptedAI(creature)
             {}
 
-            void IsSummonedBy(Unit* /**/) override
+            void IsSummonedBy(WorldObject* /**/) override
             {
                 if (me->GetEntry() == NPC_OVERLOADED_ELEMENTIUM_SQUIRELL_BOMB)
                     DoCast(me, SPELL_OVERLOADED, true);
@@ -280,7 +280,7 @@ class npc_vha_mechanical_squirrel_bomb : public CreatureScript
             npc_vha_mechanical_squirrel_bomb_AI(Creature* creature) : ScriptedAI(creature)
             {}
 
-            void IsSummonedBy(Unit* /**/) override
+            void IsSummonedBy(WorldObject* /**/) override
             {
                 _events.ScheduleEvent(EVENT_BOMB_SQUIRREL_BOMB, Seconds(1));
             }
@@ -341,7 +341,7 @@ class npc_vha_rocket_chicken : public CreatureScript
                 me->AddUnitState(UNIT_STATE_ROOT);
             }
 
-            void IsSummonedBy(Unit* /**/) override
+            void IsSummonedBy(WorldObject* /**/) override
             {
                 if (IsHeroic())
                     _events.ScheduleEvent(EVENT_SWARN_ROCKETS, Seconds(2));

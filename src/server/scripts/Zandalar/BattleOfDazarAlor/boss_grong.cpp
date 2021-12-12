@@ -315,7 +315,7 @@ struct npc_apetagonizer_3000 : public ScriptedAI
         me->UpdatePosition(me->GetPositionX()+ 0.0f, me->GetPositionY() + 0.0f, me->GetPositionZ() + 20.0f, me->GetOrientation());
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         InstanceScript* instance;
         me->AddAura(PARACHUTE, me);
@@ -401,7 +401,7 @@ struct npc_apetagonize_core : public ScriptedAI
         return true;
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->CastSpell(me, APETAGONIZE_CORE_MISSILE);
     }

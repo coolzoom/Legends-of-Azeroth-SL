@@ -279,7 +279,7 @@ struct npc_shredded_psyche : public ScriptedAI
         ScriptedAI::Reset();
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetDisplayId(me->GetNativeDisplayId());
         me->AddAura(309681, me);

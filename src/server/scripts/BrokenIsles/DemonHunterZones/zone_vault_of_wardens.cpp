@@ -103,7 +103,7 @@ public:
         uint32 timer;
         bool movein;
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             Player* player = summoner->ToPlayer();
 
@@ -1772,7 +1772,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) { }
 
-        void IsSummonedBy(Unit* who) override
+        void IsSummonedBy(WorldObject* who) override
         {
             _events.ScheduleEvent(EVENT_START_KAYN_MOVE, 1000);
             _events.ScheduleEvent(EVENT_KAYN_TALK_1, 1000);
@@ -1860,7 +1860,7 @@ public:
 
         void EnterCombat(Unit* /*who*/) { }
 
-        void IsSummonedBy(Unit* who) override
+        void IsSummonedBy(WorldObject* who) override
         {
             _events.ScheduleEvent(EVENT_START_ALTRUIS_MOVE, 1000);
             _events.ScheduleEvent(EVENT_ALTRUIS_TALK_1, 7000);
@@ -1972,7 +1972,7 @@ public:
             _events.Reset();
         }
 
-        void IsSummonedBy(Unit* who)
+        void IsSummonedBy(WorldObject* who)
         {
             if (Player* player = who->ToPlayer())
             {
@@ -2169,7 +2169,7 @@ public:
             _events.Reset();
         }
 
-        void IsSummonedBy(Unit* who)
+        void IsSummonedBy(WorldObject* who)
         {
             if (Player* player = who->ToPlayer())
             {

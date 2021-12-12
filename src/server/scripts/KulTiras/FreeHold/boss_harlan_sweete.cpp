@@ -217,7 +217,7 @@ struct npc_irontide_granadier : public ScriptedAI
 {
     npc_irontide_granadier(Creature* creature) : ScriptedAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetReactState(REACT_PASSIVE);
         targetGUID.Clear();
@@ -272,7 +272,7 @@ struct npc_swiftwind_saber : public ScriptedAI
 {
     npc_swiftwind_saber(Creature* creature) : ScriptedAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetReactState(REACT_PASSIVE);
         float orientation = me->GetOrientation();

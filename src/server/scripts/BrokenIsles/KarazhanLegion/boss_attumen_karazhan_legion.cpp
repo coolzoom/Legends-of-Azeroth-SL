@@ -593,7 +593,7 @@ class npc_kara_intagible_presence : public CreatureScript
                 me->CastSpell(me, SPELL_GHOSTLY_COSMETIC, true);
             }
 
-            void IsSummonedBy(Unit* /**/) override
+            void IsSummonedBy(WorldObject* /**/) override
             {
                 _events.ScheduleEvent(EVENT_MOUNT_VEHICLE, 1s);
                 _events.ScheduleEvent(EVENT_INTAGIBLE_PRESSENCE, 3s);

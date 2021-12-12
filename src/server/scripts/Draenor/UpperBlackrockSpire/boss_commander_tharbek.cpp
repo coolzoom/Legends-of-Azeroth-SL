@@ -370,7 +370,7 @@ struct npc_ironbarb_skyreaver : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/) override
     {
         if (!me->IsInCombat())
             DoZoneInCombat();
@@ -427,7 +427,7 @@ struct npc_imbued_iron_axe_stalker : public ScriptedAI
         DoCast(me, SPELL_IMBUED_IRON_AXE_AURA, true);
     }
 
-    void IsSummonedBy(Unit* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/) override
     {
         events.RescheduleEvent(EVENT_RANDOM_POS, 1000);
     }

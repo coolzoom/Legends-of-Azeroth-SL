@@ -141,7 +141,7 @@ struct npc_deathtouched_slaver : public ScriptedAI
 {
     npc_deathtouched_slaver(Creature* c) : ScriptedAI(c) { }
 
-    void IsSummonedBy(Unit* s) override
+    void IsSummonedBy(WorldObject* s) override
     {
         me->AI()->DoZoneInCombat();
     }

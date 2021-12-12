@@ -450,7 +450,7 @@ struct npc_tol_dagor_getaway_boat : public ScriptedAI
     { 396.1441f, -2403.012f, -0.052747f },
     };
 
-    void IsSummonedBy(Unit* unit) override
+    void IsSummonedBy(WorldObject* unit) override
     {
         if (Player* player = unit->ToPlayer())
         {
@@ -588,7 +588,7 @@ struct npc_taelia_get_your_bearings : public FollowerAI
         { 135153, ConvByKillStruct(3, 124768, 5375) },
     };
 
-    void IsSummonedBy(Unit* unit) override
+    void IsSummonedBy(WorldObject* unit) override
     {
         me->AddNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
 
@@ -822,7 +822,7 @@ public:
         SPELL_THROW_FLASK = 251065
     };
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         Start(false, true, summoner->GetGUID());
         SetEscortPaused(true);
@@ -979,7 +979,7 @@ public:
         pos[5] = Position(1119.719971f, 265.915009f, 17.663000f, 2.204700f); // 128608
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         _numberOfSummonsAlive = 2;
         if (TempSummon* ts = me->SummonCreature(NPC_LIVING_ARTEFACT, pos[0], TEMPSUMMON_CORPSE_DESPAWN)) ts->AI()->AttackStart(me);
@@ -1085,7 +1085,7 @@ public:
         QUEST_HOLD_MY_HAND = 50005
     };
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         Start(false, false, summoner->GetGUID(), NULL, true);
         SetDespawnAtFar(true);
@@ -1144,7 +1144,7 @@ public:
 
     void EnterEvadeMode(EvadeReason /*why*/) override { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner)
         {

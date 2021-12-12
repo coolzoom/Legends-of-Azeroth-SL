@@ -385,7 +385,7 @@ struct npc_void_ascendant : public ScriptedAI
 	//	me->AddAura(AURA_OVERRIDE_POWER_COLOR_PURPLE);
 	}
 
-	void IsSummonedBy(Unit* summoner) override
+	void IsSummonedBy(WorldObject* summoner) override
 	{
 		if (summoner->IsInCombat())
 			DoZoneInCombat(nullptr);

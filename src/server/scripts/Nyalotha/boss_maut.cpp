@@ -446,7 +446,7 @@ struct npc_mana_orb : public ScriptedAI
         }
     }
 
-	void IsSummonedBy(Unit* unit) override
+	void IsSummonedBy(WorldObject* unit) override
 	{        
         me->SetReactState(REACT_PASSIVE);
 		if (Creature* maut = me->FindNearestCreature(NPC_MAUT, 500.0f, true))

@@ -1828,7 +1828,7 @@ class mob_hisek_the_swarmkeeper_two : public CreatureScript
 
             EventMap events;
 
-            void IsSummonedBy(Unit* owner) override
+            void IsSummonedBy(WorldObject* owner) override
             {
                 if (owner->ToCreature()->GetEntry() == MOB_SECOND_HISEK_THE_SWARMKEEPER)
                     me->RemoveNpcFlag(UNIT_NPC_FLAG_QUESTGIVER);
@@ -2224,7 +2224,7 @@ class mob_second_kaz_tik_the_manipulator : public CreatureScript
                 }
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (Creature* creature = summoner->ToCreature())
                     if (creature->GetEntry() == MOB_THIRD_KAZ_TIK_THE_MANIPULATOR)
@@ -2327,7 +2327,7 @@ class mob_muckscale_ripper : public CreatureScript
                 me->DespawnOrUnsummon();
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 if (Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))
                     AttackStart(player);
@@ -2581,7 +2581,7 @@ class mob_muckscale_flesheater : public CreatureScript
                 me->DespawnOrUnsummon();
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 if (Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))
                     AttackStart(player);
@@ -2666,7 +2666,7 @@ class mob_muckscale_serpentus : public CreatureScript
                 me->DespawnOrUnsummon();
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 if (Player* player = ObjectAccessor::GetPlayer(*me, playerGUID))
                     AttackStart(player);

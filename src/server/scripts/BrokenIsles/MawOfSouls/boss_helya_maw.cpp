@@ -874,7 +874,7 @@ class npc_mos_piercing_tentacle : public CreatureScript
                 {
                 }
 
-                void IsSummonedBy(Unit* /**/) override
+                void IsSummonedBy(WorldObject* /**/) override
                 {
                     DoCast(me, SPELL_PIERCING_TENTACLE);
                     _events.ScheduleEvent(EVENT_PIERCING_TENTACLE, Seconds(3));

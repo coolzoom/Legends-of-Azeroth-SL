@@ -754,7 +754,7 @@ struct npc_blackout_barrel : public ScriptedAI
 {
     npc_blackout_barrel(Creature* creature) : ScriptedAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetReactState(REACT_PASSIVE);
         AddTimedDelayedOperation(1 * TimeConstants::IN_MILLISECONDS, [this]() -> void

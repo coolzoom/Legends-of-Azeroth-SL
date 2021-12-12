@@ -246,7 +246,7 @@ public:
             //me->AddAura(TanaanSpells::SpellCoverOfElune, me);
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             m_Summoned = true;
 

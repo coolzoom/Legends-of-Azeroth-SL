@@ -700,7 +700,7 @@ private:
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->CastSpell(nullptr, SPELL_DEATHS_PRESENCE, true);
         //instance->DoAddAuraOnPlayers(SPELL_DEATHS_PRESENCE);

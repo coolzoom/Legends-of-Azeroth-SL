@@ -236,7 +236,7 @@ public:
             Talk(0);
         }
 
-        void IsSummonedBy(Unit* /*summoner*/) override
+        void IsSummonedBy(WorldObject* /*summoner*/) override
         {
             m_IsSummoned = true;
             m_playerNeedObjective = true;

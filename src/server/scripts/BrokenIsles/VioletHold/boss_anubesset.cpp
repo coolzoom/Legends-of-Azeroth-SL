@@ -205,7 +205,7 @@ class npc_vha_spitting_scarab : public CreatureScript
             _poisonTimer = 0;
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             if (summoner && summoner->ToCreature())
                 _anubesset = summoner->ToCreature();
@@ -262,7 +262,7 @@ class npc_vha_blistering_bettle : public CreatureScript
                 me->SetReactState(REACT_PASSIVE);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (summoner && summoner->ToCreature())
                     _anubesset = summoner->ToCreature();

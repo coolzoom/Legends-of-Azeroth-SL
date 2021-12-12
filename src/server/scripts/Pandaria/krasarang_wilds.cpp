@@ -524,7 +524,7 @@ class mob_anduin_wrynn_escort : public CreatureScript
             ObjectGuid m_playerGUID;
             EventMap m_Events;
 
-            void IsSummonedBy(Unit* p_Summoner) override
+            void IsSummonedBy(WorldObject* p_Summoner) override
             {
                 m_Events.Reset();
 
@@ -845,7 +845,7 @@ class mob_ellia_ravenmane : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1093,7 +1093,7 @@ class mob_fat_long_fat : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1275,7 +1275,7 @@ class mob_huck_wheelbarrow : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summonner*/) override
+            void IsSummonedBy(WorldObject* /*summonner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1434,7 +1434,7 @@ class mob_dextrous_izissha : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1592,7 +1592,7 @@ class mob_julia_bates : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1745,7 +1745,7 @@ class mob_kuo_na : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1903,7 +1903,7 @@ class mob_mindel_sunspeaker : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2056,7 +2056,7 @@ class mob_minh_do_tan : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2211,7 +2211,7 @@ class mob_thelonius : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2375,7 +2375,7 @@ class mob_tukka_tuk : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2534,7 +2534,7 @@ class mob_yan_quillpaw : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }

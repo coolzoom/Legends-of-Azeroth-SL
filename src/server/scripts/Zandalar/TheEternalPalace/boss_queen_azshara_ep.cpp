@@ -2276,7 +2276,7 @@ struct npc_lightning_orbs_ep : public ScriptedAI
 private:
     uint8 bounceCount;
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         this->bounceCount = 0;

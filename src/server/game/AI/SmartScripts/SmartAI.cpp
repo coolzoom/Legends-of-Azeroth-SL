@@ -678,7 +678,7 @@ void SmartAI::OnCharmed(bool /*isNew*/)
 
     //_charmed = charmed;
 
-    mIsCharmed = charmed;
+    _charmed = charmed;
 
 
     if (!charmed && !me->IsInEvadeMode())
@@ -724,7 +724,7 @@ ObjectGuid SmartAI::GetGUID(int32 /*id*/) const
 
 void SmartAI::SetRun(bool run)
 {
-    if (run == mRun)
+    if (run == _run)
         return;
 
     me->SetWalk(!run);

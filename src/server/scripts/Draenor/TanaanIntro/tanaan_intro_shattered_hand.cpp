@@ -534,7 +534,7 @@ public:
                 if (kargath->AI())
                     kargath->AI()->DoAction(1);
 
-            // Si il s'est tué lui-meme car il ne trouvait pas de pnjs, on ne donne pas de crédit au joueur
+            // Si il s'est tu?lui-meme car il ne trouvait pas de pnjs, on ne donne pas de crédit au joueur
             if (killer == me)
                 return;
 
@@ -563,7 +563,7 @@ public:
             }
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             kargathGuid = summoner->GetGUID();
 
@@ -610,7 +610,7 @@ public:
     };
 };
 
-// Est aussi utilisé par les PNJS aprcs l'arcne
+// Est aussi utilis?par les PNJS aprcs l'arcne
 class npc_tanaan_arena_helper : public CreatureScript
 {
 public:

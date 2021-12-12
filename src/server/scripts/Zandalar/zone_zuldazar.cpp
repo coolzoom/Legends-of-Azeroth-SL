@@ -92,7 +92,7 @@ struct npc_talanji_arrival_escort : public EscortAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (Player* player = summoner->ToPlayer())
         {
@@ -121,7 +121,7 @@ struct npc_enforcer_pterrordax : public EscortAI
 {
     npc_enforcer_pterrordax(Creature* creature) : EscortAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         Player* player = summoner->ToPlayer();
         if (!player || player->GetQuestStatus(QUEST_RASTAKHAN) != QUEST_STATUS_INCOMPLETE)
@@ -298,7 +298,7 @@ public:
 
     void EnterEvadeMode(EvadeReason /*why*/) override { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner)
         {
@@ -333,7 +333,7 @@ public:
 
     void EnterEvadeMode(EvadeReason /*why*/) override { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner)
         {
@@ -368,7 +368,7 @@ public:
 
     void EnterEvadeMode(EvadeReason /*why*/) override { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner)
         {

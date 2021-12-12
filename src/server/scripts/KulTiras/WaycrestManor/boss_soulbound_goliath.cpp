@@ -176,7 +176,7 @@ struct npc_burning_soul : public ScriptedAI
 		}
 	}
 
-	void IsSummonedBy(Unit* s) override
+	void IsSummonedBy(WorldObject* s) override
 	{		
 		me->CastSpell(me, BURNING_FISTS);
 		me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);

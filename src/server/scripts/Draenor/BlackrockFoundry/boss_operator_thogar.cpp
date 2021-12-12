@@ -1402,7 +1402,7 @@ class npc_foundry_siege_engine : public CreatureScript
         {
             npc_foundry_siege_engineAI(Creature* p_Creature) : ScriptedAI(p_Creature) { }
 
-            void IsSummonedBy(Unit* p_Summoner) override
+            void IsSummonedBy(WorldObject* p_Summoner) override
             {
                 ObjectGuid l_Guid = p_Summoner->GetGUID();
                // AddTimedDelayedOperation(50, [this, l_Guid]() -> void

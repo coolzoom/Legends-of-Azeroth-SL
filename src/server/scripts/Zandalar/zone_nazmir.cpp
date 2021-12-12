@@ -77,7 +77,7 @@ struct npc_riding_raptor_147318 : public ScriptedAI
 {
     npc_riding_raptor_147318(Creature* c) : ScriptedAI(c) { Vehicle* vehicle = me->GetVehicleKit(); }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (Player* player = summoner->ToPlayer())
         {
@@ -147,7 +147,7 @@ struct npc_pterrodax_143701 : public ScriptedAI
 {
     npc_pterrodax_143701(Creature* c) : ScriptedAI(c) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (Player* player = summoner->ToPlayer())
         {

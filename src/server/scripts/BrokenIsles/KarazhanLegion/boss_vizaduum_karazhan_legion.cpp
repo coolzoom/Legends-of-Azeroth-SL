@@ -488,7 +488,7 @@ class npc_kara_fel_cannon : public CreatureScript
                 _timerCheck = 0;
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject *summoner) override
             {
                 if (!summoner)
                     return;

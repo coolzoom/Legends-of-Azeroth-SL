@@ -900,7 +900,7 @@ struct npc_fiery_trickster : ScriptedAI
         events.Reset();
     }
 
-    void IsSummonedBy(Unit* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/) override
     {
         std::list<Player*> playerList;
         GetPlayerListInGrid(playerList, me, 300.0f);
@@ -947,7 +947,7 @@ struct npc_felblaze_maniacr : ScriptedAI
         events.Reset();
     }
 
-    void IsSummonedBy(Unit* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/) override
     {
         DoCast(SPELL_SCORCHING_PRESENCE);
         me->GetMotionMaster()->MoveRandom(5.0f);

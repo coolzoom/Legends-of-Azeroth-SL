@@ -340,7 +340,7 @@ class npc_mos_soul_fragment : public CreatureScript
                 DoCast(me, SPELL_FRAGMENT_AURA_SOUL, true);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;

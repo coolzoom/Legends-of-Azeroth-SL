@@ -377,7 +377,7 @@ struct npc_essence_raden : public ScriptedAI
 		}
 	}
 
-	void IsSummonedBy(Unit* summoner) override
+	void IsSummonedBy(WorldObject* summoner) override
 	{
 		switch (me->GetEntry())
 		{
@@ -514,7 +514,7 @@ struct npc_void_hunter_crackling_stalker : public ScriptedAI
 		}
 	}
 
-	void IsSummonedBy(Unit* summoner)
+	void IsSummonedBy(WorldObject* summoner)
 	{
 		if (summoner->IsInCombat())
 			me->AI()->DoZoneInCombat(nullptr);

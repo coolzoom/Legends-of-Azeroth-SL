@@ -191,7 +191,7 @@ class npc_kara_volatile_energy : public CreatureScript
                     me->CastSpell(me, SPELL_VOLATILE_ENERGY_PASSIVE, true);
                 }
 
-                void IsSummonedBy(Unit* /**/) override
+                void IsSummonedBy(WorldObject* /**/) override
                 {
                     _timerJump = urand(9, 13) * IN_MILLISECONDS;
                 }

@@ -280,7 +280,7 @@ struct npc_walkie_shockie_x1 : public ScriptedAI
         });
     }
 
-    void IsSummonedBy(Unit* unit) override
+    void IsSummonedBy(WorldObject* unit) override
     {
         me->GetScheduler().Schedule(1500ms, [this] (TaskContext context)
         {

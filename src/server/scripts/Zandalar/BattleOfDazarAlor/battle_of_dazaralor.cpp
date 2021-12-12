@@ -104,7 +104,7 @@ public:
         me->SetCanFly(true);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         Start(false, true, summoner->GetGUID());
     }
@@ -196,11 +196,11 @@ private:
             me->SummonCreature(me->GetEntry(), me->GetPosition(), TEMPSUMMON_TIMED_DESPAWN, 20000);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner->IsPlayer() && me->GetMapId() == 2070)
         {   
-            summoner->EnterVehicle(me);
+            summoner->ToCreature()->EnterVehicle(me);
             me->GetMotionMaster()->MovePoint(1, -1461.164f, 805.806f, 135.850f, true);
         }
     }

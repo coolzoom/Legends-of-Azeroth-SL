@@ -339,7 +339,7 @@ struct npc_organ_of_corruption : public ScriptedAI
 	//	me->AddAura(AURA_OVERRIDE_POWER_COLOR_RAGE);		
 	}
 
-	void IsSummonedBy(Unit* summoner) override
+	void IsSummonedBy(WorldObject* summoner) override
 	{
 		if (instance)
 		{

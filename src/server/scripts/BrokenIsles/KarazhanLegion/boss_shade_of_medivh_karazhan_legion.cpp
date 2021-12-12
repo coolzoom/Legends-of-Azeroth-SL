@@ -330,7 +330,7 @@ class npc_kara_guardian_image : public CreatureScript
                 _events.Reset();
             }
 
-            void IsSummonedBy(Unit* /**/) override
+            void IsSummonedBy(WorldObject* /**/) override
             {
                 _events.ScheduleEvent(EVENT_ARCANE_BOLT, 2s);
                 InstanceScript* instance = me->GetInstanceScript();

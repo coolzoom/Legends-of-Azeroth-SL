@@ -85,7 +85,7 @@ struct npc_jaina_150101 : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_PC);
         me->AddUnitFlag(UNIT_FLAG_IMMUNE_TO_NPC);
@@ -669,7 +669,7 @@ struct npc_thalyssra_155137 : public ScriptedAI
         ScriptedAI::Reset();
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetWalk(false);
         me->GetMotionMaster()->MoveFollow(summoner, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);

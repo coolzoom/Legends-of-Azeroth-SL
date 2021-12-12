@@ -510,7 +510,7 @@ public:
             instance->SendEncounterUnit(ENCOUNTER_FRAME_DISENGAGE, me);
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             if (summoner->IsInCombat())
             {
@@ -652,7 +652,7 @@ public:
                 instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             if (me->GetEntry() != NPC_DOMINATOR_TENTACLE)
                 DoZoneInCombat();
@@ -750,7 +750,7 @@ public:
             tickPower_Timer = 1000;
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             DoZoneInCombat(me);
             events.ScheduleEvent(1, 5000);
@@ -841,7 +841,7 @@ public:
 
         void Reset() override {}
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             explosion = false;
             DoZoneInCombat(me);

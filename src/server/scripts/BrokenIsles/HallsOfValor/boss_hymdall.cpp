@@ -290,7 +290,7 @@ struct hymdall_storm_drake : public ScriptedAI
         EVENT_MOVE_FORWARD = 1,
     };
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         AddTimedDelayedOperation(1000, [this]() -> void
         {

@@ -288,7 +288,7 @@ public:
             m_Events.Reset();
         }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             m_Summoned = true;
             m_PlayerGuid = summoner->GetGUID();

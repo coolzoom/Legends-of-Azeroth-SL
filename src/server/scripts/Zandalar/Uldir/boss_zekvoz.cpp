@@ -417,7 +417,7 @@ struct npc_silithid_warrior : public ScriptedAI
         events.ScheduleEvent(EVENT_JAGGED_MANDIBLE, 2s);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AI()->DoZoneInCombat(nullptr);
     }
@@ -812,7 +812,7 @@ struct npc_nerubian_voidweaver : public ScriptedAI
         ScriptedAI::Reset();       
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AI()->DoZoneInCombat(nullptr);
 

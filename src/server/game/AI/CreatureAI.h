@@ -84,10 +84,6 @@ class TC_GAME_API CreatureAI : public UnitAI
         // Gets the id of the AI (script id)
         uint32 GetId() const { return _scriptId; }
 
-
-        // Gets the id of the AI (script id)
-        uint32 GetId() const { return _scriptId; }
-
         void Talk(uint8 id, WorldObject const* whisperTarget = nullptr);
 
         /// == Reactions At =================================

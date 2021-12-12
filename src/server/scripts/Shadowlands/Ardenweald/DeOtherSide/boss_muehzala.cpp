@@ -142,7 +142,7 @@ struct npc_bwonsamdi_portal : public ScriptedAI
         me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_NPC_FLAG_SPELLCLICK));
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->CastSpell(nullptr, SPELL_DEATH_GATE_APPLY_AT, false);
     }

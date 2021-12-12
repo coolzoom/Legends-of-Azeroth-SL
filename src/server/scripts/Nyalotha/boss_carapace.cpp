@@ -551,7 +551,7 @@ struct npc_thrashing_tentacle : public ScriptedAI
 		me->AddUnitFlag(UnitFlags(UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_NOT_SELECTABLE));
 	}
 
-	void IsSummonedBy(Unit* summoner) override
+	void IsSummonedBy(WorldObject* summoner) override
 	{
 		if (summoner->GetEntry() == NPC_FURY_OF_NZOTH)
 		{
@@ -568,7 +568,7 @@ struct npc_nightmare_antigen : public ScriptedAI
 {
 	npc_nightmare_antigen(Creature* c) : ScriptedAI(c) { }
 
-	void IsSummonedBy(Unit* summoner) override
+	void IsSummonedBy(WorldObject* summoner) override
 	{
 		if (me->GetMapId() == MAP_NYALOTHA)
 			me->AI()->DoZoneInCombat(nullptr);
@@ -723,7 +723,7 @@ private:
 		}
 	}
 
-	void IsSummonedBy(Unit* summoner) override
+	void IsSummonedBy(WorldObject* summoner) override
 	{
 		if (instance)
 			instance->SendEncounterUnit(ENCOUNTER_FRAME_ENGAGE, me);

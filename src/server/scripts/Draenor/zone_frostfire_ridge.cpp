@@ -493,7 +493,7 @@ public:
                 me->HandleEmoteCommand(EMOTE_STATE_WORK_CHOPWOOD_2);
         }
 
-        void IsSummonedBy(Unit* summoner)
+        void IsSummonedBy(WorldObject* summoner)
         {
             Player *player = summoner->ToPlayer();
             if (!player)

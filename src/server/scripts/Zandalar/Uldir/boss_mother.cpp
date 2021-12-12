@@ -309,7 +309,7 @@ struct npc_corners_purifying_flame : public ScriptedAI
     }
 
 
-    void IsSummonedBy(Unit* unit) override
+    void IsSummonedBy(WorldObject* unit) override
     {
         me->CastSpell(nullptr, SPELL_PURIFYING_FLAME_DAMAGE);
     }
@@ -520,7 +520,7 @@ struct npc_surgical_grid : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* unit) override
+    void IsSummonedBy(WorldObject* unit) override
     {
         //me->AddUnitFlag(UNIT_FLAG_NOT_SELECTABLE);
         me->SetDisplayId(16925);

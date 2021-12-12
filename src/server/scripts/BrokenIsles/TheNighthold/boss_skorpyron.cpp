@@ -348,7 +348,7 @@ public:
     {
         npc_crystalline_shardAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             _ownerGuid = summoner->GetGUID();
             DoCastSelf(SPELL_CRYSTALLINE_FRAGMENTS_AREATRIGGER);
@@ -400,7 +400,7 @@ public:
     {
         npc_arcane_tetherAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             _ownerGuid = summoner->GetGUID();
             DoCastSelf(SPELL_ARCANE_TETHER_SUMMON_VISUAL);
@@ -434,7 +434,7 @@ public:
     {
         npc_crystalline_scorpidAI(Creature* creature) : ScriptedAI(creature) { }
 
-        void IsSummonedBy(Unit* /*summoner*/) override
+        void IsSummonedBy(WorldObject* /*summoner*/) override
         {
             DoCastSelf(SPELL_SHROUDED);
         }
@@ -854,7 +854,7 @@ public:
             if (!caster)
                 return;
 
-            if (Unit* summoner = caster->GetSummoner())
+            if (WorldObject* summoner = caster->GetSummoner())
                 if (summoner->GetExactDist(caster) <= 10.0f)
                 {
                     caster->CastSpell(summoner, SPELL_ARCANE_TETHER_VISUAL_TENTACLES, true);

@@ -164,7 +164,7 @@ void ThreatReference::UnregisterAndFree()
     return true;
 }
 
-ThreatManager::ThreatManager(Unit* owner) : _owner(owner), _ownerCanHaveThreatList(false), _ownerEngaged(false), _needClientUpdate(false), _updateTimer(THREAT_UPDATE_INTERVAL), _currentVictimRef(nullptr), _fixateRef(nullptr)
+ThreatManager::ThreatManager(Unit* owner) : _owner(owner), _ownerCanHaveThreatList(false), _needClientUpdate(false), _updateTimer(THREAT_UPDATE_INTERVAL), _currentVictimRef(nullptr), _fixateRef(nullptr)
 {
     for (int8 i = 0; i < MAX_SPELL_SCHOOL; ++i)
         _singleSchoolModifiers[i] = 1.0f;
@@ -406,18 +406,9 @@ void ThreatManager::AddThreat(Unit* target, float amount, SpellInfo const* spell
     if (ref->IsOnline()) // ...and if the ref is online it also gets the threat it should have
         ref->AddThreat(amount);
 
-    if (!_ownerEngaged)
+    if (!_owner->IsEngaged())
     {
-        Creature* cOwner = ASSERT_NOTNULL(_owner->ToCreature()); // if we got here the owner can have a threat list, and must be a creature!
-        _ownerEngaged = true;
-
-        UpdateVictim();
-
-        SaveCreatureHomePositionIfNeed(cOwner);
-        if (CreatureAI* ownerAI = cOwner->AI())
-            ownerAI->JustEngagedWith(target);
-        if (CreatureGroup* formation = cOwner->GetFormation())
-            formation->MemberEngagingTarget(cOwner, target);
+        _owner->AtEngage(target);
     }
 }
 

@@ -64,7 +64,7 @@ struct boss_council_tribes : public BossAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AI()->DoZoneInCombat();
     }
@@ -230,7 +230,7 @@ struct npc_zanazal_totem : public ScriptedAI
             DoStartMovement(u);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetReactState(REACT_PASSIVE);
         switch (me->GetEntry())

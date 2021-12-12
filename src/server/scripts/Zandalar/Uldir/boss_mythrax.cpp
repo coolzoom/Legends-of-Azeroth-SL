@@ -413,7 +413,7 @@ private:
         retreat = false;
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner->GetEntry() == NPC_MYTHRAX)
             me->CastSpell(nullptr, SPELL_LIVING_WEAPON_DAMAGE, true);

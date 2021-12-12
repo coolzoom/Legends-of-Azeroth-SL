@@ -165,7 +165,7 @@ class npc_vha_congealing_blood : public CreatureScript
                 _princess = nullptr;
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;

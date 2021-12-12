@@ -55,7 +55,7 @@ class TC_GAME_API CombatAI : public CreatureAI
 
     protected:
         Optional<Position> combatMoveDest;
-        EventMap events;
+        EventMap Events;
         SpellVector Spells;//SpellVct spells;
 };
 

@@ -345,7 +345,7 @@ struct npc_gnomish_support_claw : public ScriptedAI
         me->SetFlying2(true);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SummonCreature(NPC_SPARK_BOT, me->GetPosition(), TEMPSUMMON_MANUAL_DESPAWN);
         me->DespawnOrUnsummon(3s);
@@ -369,7 +369,7 @@ struct npc_spark_bot : public ScriptedAI
         me->CastSpell(nullptr, SPELL_GNOMISH_FORCE_SHIELD, true);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->GetScheduler().Schedule(2s, [this](TaskContext context)
         {
@@ -407,7 +407,7 @@ struct npc_explosive_sheep : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->CastSpell(nullptr, SPELL_CRITTER_EXPLOSION, false);
     }

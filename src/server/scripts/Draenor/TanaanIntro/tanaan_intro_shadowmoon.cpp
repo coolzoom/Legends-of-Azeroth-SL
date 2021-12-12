@@ -248,7 +248,7 @@ struct npc_tanaan_yrel_summon : public FollowerAI
     EventMap m_Events;
     ObjectGuid m_PlayerGuid;
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (!summoner->ToPlayer())
             return;

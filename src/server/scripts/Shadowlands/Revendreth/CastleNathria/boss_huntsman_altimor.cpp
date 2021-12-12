@@ -399,7 +399,7 @@ struct npc_ripped_soul : public ScriptedAI
 {
     npc_ripped_soul(Creature* c) : ScriptedAI(c) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (Creature* altimor = me->FindNearestCreature(NPC_HUNTSMAN_ALTIMOR, 100.0f, true))
         {

@@ -256,7 +256,7 @@ struct npc_scout_o_matic_5000 : public ScriptedAI
 private:
     Vehicle* vehicle;
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         vehicle = me->GetVehicleKit();
         summoner->EnterVehicle(me);
@@ -337,7 +337,7 @@ struct npc_giant_boar : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
         me->SetWalk(false);
@@ -559,7 +559,7 @@ struct npc_ralia_dreamchacer_156929 : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->AddUnitFlag(UNIT_FLAG_NON_ATTACKABLE);
         me->SetWalk(false);

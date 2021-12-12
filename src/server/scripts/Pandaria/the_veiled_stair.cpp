@@ -88,7 +88,7 @@ class npc_wrathion_mason : public CreatureScript
                 events.Reset();
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (Player* player = summoner->ToPlayer())
                 {

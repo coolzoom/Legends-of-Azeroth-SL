@@ -313,7 +313,7 @@ struct npc_aegis_of_aggramar : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         clicked = false;
         me->CastSpell(me, SPELL_AEGIS_SPAWN, true);

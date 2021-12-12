@@ -136,7 +136,7 @@ struct npc_flying_claw : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* /*summoner*/) override
+    void IsSummonedBy(WorldObject* /*summoner*/) override
     {        
         me->GetMotionMaster()->MoveFall();
     }

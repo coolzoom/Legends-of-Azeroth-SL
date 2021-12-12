@@ -839,7 +839,7 @@ class mob_spirit_of_violence : public CreatureScript
                 xuen->AI()->SetData(XUEN_PHASE_2, DONE);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;
@@ -932,7 +932,7 @@ class mob_spirit_of_anger : public CreatureScript
                 }
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;
@@ -1020,7 +1020,7 @@ class mob_spirit_of_hatred : public CreatureScript
                 xuen->AI()->DoAction(ACTION_FINAL_KILL_CREDIT);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;
@@ -1202,7 +1202,7 @@ class mob_lun_chi : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1362,7 +1362,7 @@ class mob_brewmaster_chani : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1518,7 +1518,7 @@ class mob_kang_bramblestaff : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1689,7 +1689,7 @@ class mob_clever_ashyo : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -1865,7 +1865,7 @@ class mob_ken_ken : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2031,7 +2031,7 @@ class mob_the_wrestler : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2191,7 +2191,7 @@ class mob_master_boom_boom : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2346,7 +2346,7 @@ class mob_master_windfur : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2524,7 +2524,7 @@ class mob_tankiss : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2718,7 +2718,7 @@ class mob_healiss : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }
@@ -2912,7 +2912,7 @@ class mob_hackiss : public CreatureScript
                     playerGUID = guid;
             }
 
-            void IsSummonedBy(Unit* /*summoner*/) override
+            void IsSummonedBy(WorldObject* /*summoner*/) override
             {
                 events.ScheduleEvent(EVENT_DESPAWN, 600000);
             }

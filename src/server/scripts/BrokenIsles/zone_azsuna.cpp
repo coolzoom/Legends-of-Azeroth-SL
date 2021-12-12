@@ -275,7 +275,7 @@ struct questnpc_soul_gem : public ScriptedAI
         }
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (Player* player = summoner->ToPlayer()) {
             _playerGUID = player->GetGUID();
@@ -460,7 +460,7 @@ public:
             playerGuid = ObjectGuid::Empty;
         }
 
-        void IsSummonedBy(Unit* /*me*/) override
+        void IsSummonedBy(WorldObject* /*me*/) override
         {
             wp_reached = false;
             me->SetWalk(false);

@@ -63,7 +63,7 @@ class npc_cos_nightborne_boat : public CreatureScript
                 me->AddExtraUnitMovementFlag(MOVEMENTFLAG2_NO_STRAFE | MOVEMENTFLAG2_NO_JUMPING | MOVEMENTFLAG2_VEHICLE_PASSENGER_IS_TRANSITION_ALLOWED);
             }
 
-            void IsSummonedBy(Unit* summoner) override
+            void IsSummonedBy(WorldObject* summoner) override
             {
                 if (!summoner)
                     return;

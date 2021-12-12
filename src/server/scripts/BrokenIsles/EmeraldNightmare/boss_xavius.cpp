@@ -535,7 +535,7 @@ public:
 
         void Reset() override {}
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             checkStateBoss = 1000;
             summoner->CastSpell(me, SPELL_THE_DREAMING_CLONE_IMAGE, true);
@@ -671,7 +671,7 @@ public:
 
         void Reset() override {}
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             events.ScheduleEvent(1, 2000);
             events.ScheduleEvent(3, 3000);
@@ -745,7 +745,7 @@ public:
 
         void Reset() override {}
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             DoCast(me, SPELL_CORRUPTION_HORROR_BIRTH, true);
             DoZoneInCombat(me);
@@ -809,7 +809,7 @@ public:
 
         void Reset() override {}
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             listGuid.clear();
             events.ScheduleEvent(1, 200);
@@ -884,7 +884,7 @@ public:
 
         void Reset() override {}
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             events.ScheduleEvent(1, 1000);
         }
@@ -955,7 +955,7 @@ public:
 
         void Reset() override {}
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             events.ScheduleEvent(1, 500);
         }

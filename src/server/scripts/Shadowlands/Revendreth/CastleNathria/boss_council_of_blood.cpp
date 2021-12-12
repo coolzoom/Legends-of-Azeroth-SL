@@ -399,7 +399,7 @@ struct npc_afterimage : public ScriptedAI
 {
     npc_afterimage(Creature* c) : ScriptedAI(c) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner->IsInCombat())
             me->AI()->JustEngagedWith(summoner->GetVictim());

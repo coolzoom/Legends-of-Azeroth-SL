@@ -269,7 +269,7 @@ struct npc_ataldazar_echo_of_shadra : public ScriptedAI
         me->SetReactState(REACT_PASSIVE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
      //   events.ScheduleEvent(EVENT_SHADOW_EMPOWERED, 5000);
     }

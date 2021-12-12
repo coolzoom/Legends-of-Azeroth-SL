@@ -1627,7 +1627,7 @@ class npc_foundry_siegemaker : public CreatureScript
 
                     if (TempSummon* l_Temp = me->ToTempSummon())
                     {
-                        if (Unit* l_Owner = me->ToTempSummon()->GetSummoner())
+                        if (Unit* l_Owner = me->ToTempSummon()->GetSummoner()->ToCreature())
                             JustEngagedWith(l_Owner->GetVictim());
                     }
 
@@ -3266,10 +3266,10 @@ class areatrigger_at_foundry_crucible_balcony : public AreaTriggerScript
             p_Player->RemoveAura(eSpells::ObscuredAura);
         }
 
-        void OnExit(Player* p_Player, AreaTriggerEntry const* /*p_AreaTrigger*/)
+        bool OnExit(Player* p_Player, AreaTriggerEntry const* /*p_AreaTrigger*/)
         {
             if (m_PlayerZChanges.find(p_Player->GetEntry()) == m_PlayerZChanges.end())
-                return;
+                return false;
 
             float l_DiffZ = p_Player->m_positionZ - m_PlayerZChanges[p_Player->GetEntry()];
             if (l_DiffZ > 0)
@@ -3279,6 +3279,7 @@ class areatrigger_at_foundry_crucible_balcony : public AreaTriggerScript
             }
 
             m_PlayerZChanges.erase(p_Player->GetEntry());
+            return true;
         }
 };
 

@@ -441,7 +441,7 @@ struct npc_exposed_synapse : public ScriptedAI
         me->AddUnitState(UNIT_STATE_ROOT);
     }
 
-    void IsSummonedBy(Unit* u) override
+    void IsSummonedBy(WorldObject* u) override
     {
         me->SetObjectScale(0.5f);
         //me->SetDisplayId(95373);
@@ -566,7 +566,7 @@ struct npc_spike_tentacle : public ScriptedAI
         me->AddUnitState(UNIT_STATE_ROOT);
     }
 
-    void IsSummonedBy(Unit* u) override
+    void IsSummonedBy(WorldObject* u) override
     {
         events.ScheduleEvent(EVENT_PAIN_SPIKE, 3s);    
     }
@@ -612,7 +612,7 @@ struct npc_corruptor_tentacle_158375 : public ScriptedAI
         me->AddUnitState(UNIT_STATE_ROOT);
     }
 
-    void IsSummonedBy(Unit* u) override
+    void IsSummonedBy(WorldObject* u) override
     {
         events.ScheduleEvent(EVENT_CORRUPTED_MIND, 3s);
     }

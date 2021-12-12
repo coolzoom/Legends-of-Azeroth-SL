@@ -577,7 +577,7 @@ struct npc_magma_trap_bod : public ScriptedAI
         me->SetUnitFlags(UNIT_FLAG_NOT_SELECTABLE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {        
         me->GetScheduler().Schedule(1s, [this] (TaskContext context)
         {

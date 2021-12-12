@@ -418,7 +418,7 @@ struct npc_cyclopean_terror : public ScriptedAI
         SetCombatMovement(false);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner->IsInCombat())
             me->AI()->DoZoneInCombat(nullptr);
@@ -465,7 +465,7 @@ struct npc_dark_young : public ScriptedAI
        // me->AddAura(AURA_OVERRIDE_POWER_COLOR_PURPLE);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner->IsInCombat())
             me->AI()->DoZoneInCombat(nullptr);       
@@ -765,7 +765,7 @@ struct npc_blightspreader_tendril : public ScriptedAI
         events.ScheduleEvent(EVENT_DECAYING_ERUPTION, 5s);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         SetCombatMovement(false);
         if (summoner->IsInCombat())
@@ -1044,7 +1044,7 @@ struct npc_matrix_surge : public ScriptedAI
         me->GetSpeed(MOVE_WALK);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         AddTimedDelayedOperation(1500, [this]() -> void
         {            
@@ -1072,7 +1072,7 @@ struct npc_bursting_boil : public ScriptedAI
         ScriptedAI::Reset();       
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->CastSpell(nullptr, SPELL_BURSTING_BOIL_VISUAL);
         AddTimedDelayedOperation(8100, [this]() -> void
@@ -1107,7 +1107,7 @@ private:
         events.ScheduleEvent(EVENT_MIND_NUMBED_CHATTER, 5s);
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         if (summoner->IsInCombat())
             me->AI()->DoZoneInCombat(nullptr);
@@ -1154,7 +1154,7 @@ private:
         ScriptedAI::Reset();
     }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         host_Targeted = false;
         if (Unit* target = SelectTarget(SELECT_TARGET_RANDOM, 0 , 100.0f, true))

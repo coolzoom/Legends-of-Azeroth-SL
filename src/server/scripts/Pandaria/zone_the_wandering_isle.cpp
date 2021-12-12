@@ -1419,7 +1419,7 @@ public:
             _events.ScheduleEvent(EVENT_FIRE, 500);
         }
 
-        void IsSummonedBy(Unit* owner) override
+        void IsSummonedBy(WorldObject* owner) override
         {
             if (RukRukAI* rukRukAI = CAST_AI(RukRukAI, owner->GetAI()))
             {
@@ -2629,7 +2629,7 @@ public:
 
         uint64 playerGuid;
 
-        void IsSummonedBy(Unit* summoner) override
+        void IsSummonedBy(WorldObject* summoner) override
         {
             //playerGuid = summoner->GetGUID();
             me->GetMotionMaster()->MoveFollow(summoner, 1.0f, 1.0f, MOTION_SLOT_ACTIVE);

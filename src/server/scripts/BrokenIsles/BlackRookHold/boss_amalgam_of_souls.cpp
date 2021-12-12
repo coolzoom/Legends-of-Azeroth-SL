@@ -152,7 +152,7 @@ struct npc_aos_soul_echo : public ScriptedAI
 {
     npc_aos_soul_echo(Creature* creature) : ScriptedAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetFaction(16);
         me->AddUnitFlag(UnitFlags(UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC));
@@ -171,7 +171,7 @@ struct npc_aos_restless_soul : public ScriptedAI
 {
     npc_aos_restless_soul(Creature* creature) : ScriptedAI(creature) { }
 
-    void IsSummonedBy(Unit* summoner) override
+    void IsSummonedBy(WorldObject* summoner) override
     {
         me->SetSpeed(MOVE_FLIGHT, 1.5f);
         me->SetSpeed(MOVE_RUN,    1.5f);
@@ -206,8 +206,8 @@ private:
     CreatureAI* GetSummonerAI()
     {
         if (TempSummon* meTempSummon = me->ToTempSummon())
-            if (Unit* summoner = meTempSummon->GetSummoner())
-                if (summoner->IsCreature() && summoner->IsAIEnabled())
+            if (WorldObject* summoner = meTempSummon->GetSummoner())
+                if (summoner->IsCreature() && me->IsAIEnabled())
                     return summoner->ToCreature()->AI();
 
         return nullptr;
