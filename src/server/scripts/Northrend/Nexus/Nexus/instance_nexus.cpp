@@ -65,6 +65,34 @@ class instance_nexus : public InstanceMapScript
                         break;
                 }
             }
+			
+            uint32 GetCreatureEntry(ObjectGuid::LowType /*guidLow*/, CreatureData const* data) override
+            {
+                if (!_teamInInstance)
+                {
+                    Map::PlayerList const& players = instance->GetPlayers();
+                    if (!players.isEmpty())
+                        if (Player* player = players.begin()->GetSource())
+                            _teamInInstance = player->GetTeam();
+                }
+
+                uint32 entry = data->id;
+                switch (entry)
+                {
+                    case NPC_ALLIANCE_BERSERKER:
+                        return _teamInInstance == ALLIANCE ? NPC_HORDE_BERSERKER : NPC_ALLIANCE_BERSERKER;
+                    case NPC_ALLIANCE_RANGER:
+                        return _teamInInstance == ALLIANCE ? NPC_HORDE_RANGER : NPC_ALLIANCE_RANGER;
+                    case NPC_ALLIANCE_CLERIC:
+                        return _teamInInstance == ALLIANCE ? NPC_HORDE_CLERIC : NPC_ALLIANCE_CLERIC;
+                    case NPC_ALLIANCE_COMMANDER:
+                        return _teamInInstance == ALLIANCE ? NPC_HORDE_COMMANDER : NPC_ALLIANCE_COMMANDER;
+                    case NPC_COMMANDER_STOUTBEARD:
+                        return _teamInInstance == ALLIANCE ? NPC_COMMANDER_KOLURG : NPC_COMMANDER_STOUTBEARD;
+                    default:
+                        return entry;
+                }
+            }
 
             uint32 GetCreatureEntry(ObjectGuid::LowType /*guidLow*/, CreatureData const* data) override
             {

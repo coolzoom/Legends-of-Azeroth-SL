@@ -5485,7 +5485,11 @@ void Spell::EffectUncageBattlePet()
 
     battlePetMgr->AddPet(speciesId, displayId, breed, BattlePetBreedQuality(quality), level);
 
-    player->SendPlaySpellVisual(player, SPELL_VISUAL_UNCAGE_PET, 0, 0, 0.f, false);
+    if (speciesEntry->SummonSpellID)
+        if (!player->HasSpell(speciesEntry->SummonSpellID))
+            player->LearnSpell(speciesEntry->SummonSpellID, false);
+
+	  player->SendPlaySpellVisual(player, SPELL_VISUAL_UNCAGE_PET, 0, 0, 0.f, false);
 
     player->DestroyItem(m_CastItem->GetBagSlot(), m_CastItem->GetSlot(), true);
     m_CastItem = nullptr;

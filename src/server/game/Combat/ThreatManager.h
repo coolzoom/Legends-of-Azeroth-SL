@@ -43,6 +43,11 @@ class SpellInfo;
  *  - Both owner and victim are valid units, which are currently in the world. Neither can be nullptr.                                                  *
  *  - There is an active combat reference between owner and victim.                                                                                     *
  *                                                                                                                                                      *
+ * ThreatManager also keeps track of whether its owner is engaged (a boolean flag).                                                                     *
+ *  - If a (non-offline) threat list entry is added to a not-yet-engaged ThreatManager, it calls JustEngagedWith on its owner's AI.                     *
+ *  - The engaged state is cleared in ClearAllThreat (which is invoked on evade).                                                                       *
+ *  - This flag can be accessed through the IsEngaged method. For creatures that can have a threat list, this is equal to Unit::IsEngaged.              *
+ *                                                                                                                                                      *
  * Note that (threat => combat) is a strong guarantee provided in conjunction with CombatManager. Thus:                                                 *
  *  - Adding threat will also create a combat reference between the units if one doesn't exist yet (even if the owner can't have a threat list!)        *
  *  - Ending combat between two units will also delete any threat references that may exist between them.                                               *
@@ -280,6 +285,7 @@ class TC_GAME_API ThreatReference
         {
             _online = ShouldBeSuppressed() ? ONLINE_STATE_SUPPRESSED : ONLINE_STATE_ONLINE;
         }
+
 
         void UnregisterAndFree();
 

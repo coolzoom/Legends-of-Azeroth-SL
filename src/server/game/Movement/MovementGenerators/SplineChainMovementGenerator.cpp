@@ -109,7 +109,7 @@ void SplineChainMovementGenerator::Initialize(Unit* owner)
         }
 
         owner->AddUnitState(UNIT_STATE_ROAMING_MOVE);
-        Movement::PointsArray partial(thisLink.Points.begin() + (_nextFirstWP-1), thisLink.Points.end());
+        Movement::PointsArray partial(thisLink.Points.begin() + (_nextFirstWP - 1), thisLink.Points.end());
         SendPathSpline(owner, partial);
 
         TC_LOG_DEBUG("movement.splinechain", "SplineChainMovementGenerator::Initialize: resumed spline chain generator from resume state. (%s)", owner->GetGUID().ToString().c_str());

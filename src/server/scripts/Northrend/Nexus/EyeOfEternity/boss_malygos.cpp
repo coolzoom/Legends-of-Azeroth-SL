@@ -728,6 +728,12 @@ public:
                 damage = me->GetHealth() - 1;
         }
 
+        void DamageTaken(Unit* /*cause*/, uint32& damage) override
+        {
+            if (damage > me->GetHealth() && _phase != PHASE_THREE)
+                damage = me->GetHealth() - 1;
+        }
+
         void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim() && _phase != PHASE_NOT_STARTED && _phase != PHASE_TWO)

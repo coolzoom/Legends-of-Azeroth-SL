@@ -2360,9 +2360,15 @@ struct KeychainEntry
 
 struct KeystoneAffixEntry
 {
+
     LocalizedString Name;
     LocalizedString Description;
     uint32 ID;
+    //ash
+    //uint32 ID;
+    //LocalizedString Name;
+    //LocalizedString Description;
+
     int32 FiledataID;
 };
 

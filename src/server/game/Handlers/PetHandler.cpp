@@ -370,7 +370,8 @@ void WorldSession::HandlePetActionHelper(Unit* pet, ObjectGuid guid1, uint32 spe
                     // This is true if pet has no target or has target but targets differs.
                     if (pet->GetVictim() != unit_target)
                     {
-                        if (CreatureAI* AI = pet->ToCreature()->AI())
+                        pet->GetMotionMaster()->Clear();
+                         if (CreatureAI* AI = pet->ToCreature()->AI())
                         {
                             if (PetAI* petAI = dynamic_cast<PetAI*>(AI))
                                 petAI->_AttackStart(unit_target); // force victim switch

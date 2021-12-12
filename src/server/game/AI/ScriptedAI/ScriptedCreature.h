@@ -235,7 +235,7 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
     //   - for raid in mode 25-heroic
     // DO NOT USE to check raid in mode 25-normal.
     bool IsHeroic() const { return _isHeroic; }
-
+    bool IsMythic() const { return me->GetMap()->IsMythic(); }
     // return the dungeon or raid difficulty
     Difficulty GetDifficulty() const { return _difficulty; }
 
@@ -293,6 +293,8 @@ struct TC_GAME_API ScriptedAI : public CreatureAI
 
         return heroic25;
     }
+
+    void KillCreditMe2(Player* player) { player->KilledMonsterCredit(me->GetEntry()); }
 
     private:
         Difficulty _difficulty;

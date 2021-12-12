@@ -311,11 +311,20 @@ class TC_GAME_API UnitAI
 
         void AttackStartCaster(Unit* victim, float dist);
 
+
         SpellCastResult DoCast(uint32 spellId);
         SpellCastResult DoCast(Unit* victim, uint32 spellId, CastSpellExtraArgs const& args = {});
         SpellCastResult DoCastSelf(uint32 spellId, CastSpellExtraArgs const& args = {}) { return DoCast(me, spellId, args); }
         SpellCastResult DoCastVictim(uint32 spellId, CastSpellExtraArgs const& args = {});
         SpellCastResult DoCastAOE(uint32 spellId, CastSpellExtraArgs const& args = {}) { return DoCast(nullptr, spellId, args); }
+
+        //void DoCast(uint32 spellId);
+        //void DoCast(Unit* victim, uint32 spellId, CastSpellExtraArgs const& args = {});
+        //void DoCastSelf(uint32 spellId, CastSpellExtraArgs const& args = {}) { DoCast(me, spellId, args); }
+        //void DoCastVictim(uint32 spellId, CastSpellExtraArgs const& args = {});
+        //void DoCastAOE(uint32 spellId, CastSpellExtraArgs const& args = {}) { DoCast(nullptr, spellId, args); }
+        void DoCastRandom(uint32 spellId, float dist, bool triggered = false, int32 aura = 0, uint32 position = 0);
+
 
         virtual bool ShouldSparWith(Unit const* /*target*/) const { return false; }
 
@@ -328,7 +337,22 @@ class TC_GAME_API UnitAI
         // Called when a game event starts or ends
         virtual void OnGameEvent(bool /*start*/, uint16 /*eventId*/) { }
 
+
         virtual std::string GetDebugInfo() const;
+
+
+        void AddTimedDelayedOperation(uint32 p_Timeout, std::function<void()>&& p_Function)
+        {
+            m_EmptyWarned = false;
+            m_TimedDelayedOperations.push_back(std::pair<uint32, std::function<void()>>(p_Timeout, p_Function));
+        }
+        void ClearDelayedOperations()
+        {
+            m_TimedDelayedOperations.clear();
+            m_EmptyWarned = false;
+        }
+        std::vector<std::pair<int32, std::function<void()>>>    m_TimedDelayedOperations;   ///< Delayed operations
+        bool                                                    m_EmptyWarned;              ///< Warning when there are no more delayed operations
 
     private:
         UnitAI(UnitAI const& right) = delete;

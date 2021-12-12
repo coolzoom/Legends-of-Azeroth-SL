@@ -44,7 +44,11 @@ int32 PetAI::Permissible(Creature const* creature)
     return PERMIT_BASE_NO;
 }
 
+
 PetAI::PetAI(Creature* creature, uint32 scriptId) : CreatureAI(creature, scriptId), _tracker(TIME_INTERVAL_LOOK)
+
+//PetAI::PetAI(Creature* c, uint32 scriptId) : CreatureAI(c, scriptId), i_tracker(TIME_INTERVAL_LOOK)
+
 {
     if (!me->GetCharmInfo())
         throw InvalidAIException("Creature doesn't have a valid charm info");
@@ -553,6 +557,7 @@ void PetAI::ReceiveEmote(Player* player, uint32 emote)
     }
 }
 
+
 bool PetAI::NeedToStop()
 {
     // This is needed for charmed creatures, as once their target was reset other effects can trigger threat
@@ -568,6 +573,9 @@ bool PetAI::NeedToStop()
 }
 
 void PetAI::StopAttack()
+
+//void PetAI::ClearCharmInfoFlags()
+
 {
     if (!me->IsAlive())
     {

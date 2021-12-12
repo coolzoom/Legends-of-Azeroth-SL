@@ -465,7 +465,11 @@ struct HyperlinkInfo
     std::pair<char const*, size_t> const text;
 };
 HyperlinkInfo TC_GAME_API ParseHyperlink(char const* pos);
+
 bool TC_GAME_API CheckAllLinks(std::string const&);
+
+//bool TC_GAME_API ValidateLinks(std::string&);
+
 
 }
 }

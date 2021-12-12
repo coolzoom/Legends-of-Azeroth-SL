@@ -64,6 +64,44 @@ Position Position::GetPositionWithOffset(Position const& offset) const
     return ret;
 }
 
+float Position::GetAngle2(Position const* pos) const
+{
+    if (!pos)
+        return 0;
+
+    return GetAngle2(pos->GetPositionX(), pos->GetPositionY());
+}
+
+// Return angle in range 0..2*pi
+float Position::GetAngle2(float x, float y) const
+{
+    float dx = x - GetPositionX();
+    float dy = y - GetPositionY();
+
+    float ang = std::atan2(dy, dx);
+    ang = (ang >= 0) ? ang : 2 * float(M_PI) + ang;
+    return ang;
+}
+
+void Position::GetSinCos(const float x, const float y, float &vsin, float &vcos) const
+{
+    float dx = GetPositionX() - x;
+    float dy = GetPositionY() - y;
+
+    if (std::fabs(dx) < 0.001f && std::fabs(dy) < 0.001f)
+    {
+        float angle = (float)rand_norm()*static_cast<float>(2 * M_PI);
+        vcos = std::cos(angle);
+        vsin = std::sin(angle);
+    }
+    else
+    {
+        float dist = std::sqrt((dx*dx) + (dy*dy));
+        vcos = dx / dist;
+        vsin = dy / dist;
+    }
+}
+
 bool Position::IsWithinBox(Position const& center, float xradius, float yradius, float zradius) const
 {
     // rotate the WorldObject position instead of rotating the whole cube, that way we can make a simplified

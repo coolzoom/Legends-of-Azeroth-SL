@@ -583,7 +583,7 @@ bool Creature::InitEntry(uint32 entry, CreatureData const* data /*= nullptr*/)
             SetSpeedRate(MOVE_RUN, 0.8f);				// en combat
             SetSpeedRate(MOVE_SWIM, 0.4f);				// en nageant
         }
-        // Geant 
+        // Geant
         if (Crtype == CREATURE_TYPE_GIANT)
         {
             SetSpeedRate(MOVE_WALK, 0.8f);				// hors combat
@@ -604,7 +604,7 @@ bool Creature::InitEntry(uint32 entry, CreatureData const* data /*= nullptr*/)
             SetSpeedRate(MOVE_RUN, 1.0f);				// en combat
             SetSpeedRate(MOVE_SWIM, 0.5f);				// en nageant
         }
-        // Humanoide , Non specifié  
+        // Humanoide , Non specifi„1¤7
         if (Crtype == CREATURE_TYPE_HUMANOID || Crtype == CREATURE_TYPE_NOT_SPECIFIED)
         {
             SetSpeedRate(MOVE_WALK, 0.6f);				// hors combat
@@ -955,9 +955,17 @@ void Creature::Update(uint32 diff)
                 }
             }
 
-
+            //tcmaster
             // do not allow the AI to be changed during update
             Unit::AIUpdateTick(diff);
+
+
+            //ash
+            // do not allow the AI to be changed during update
+            //m_AI_locked = true;
+            //Unit::AIUpdateTick(diff);
+            //m_AI_locked = false;
+
 
             // creature can be dead after UpdateAI call
             // CORPSE/DEAD state will processed at next tick (in other case death timer will be updated unexpectedly)
@@ -1112,13 +1120,33 @@ void Creature::DoFleeToGetAssistance()
 
 bool Creature::AIM_Destroy()
 {
+    //tcmaster
     PopAI();
     RefreshAI();
+
+    //ash
+    //if (m_AI_locked)
+    //{
+    //    TC_LOG_DEBUG("scripts", "AIM_Destroy: failed to destroy, locked.");
+    //    return false;
+    //}
+
+    //SetAI(nullptr);
+
     return true;
 }
 
 bool Creature::AIM_Create(CreatureAI* ai /*= nullptr*/)
 {
+
+    //ash
+    // make sure nothing can change the AI during AI update
+    //if (m_AI_locked)
+    //{
+    //    TC_LOG_DEBUG("scripts", "AIM_Initialize: failed to init, locked.");
+    //    return false;
+    //}
+
     Motion_Initialize();
 
     SetAI(ai ? ai : FactorySelector::SelectAI(this));
@@ -3529,4 +3557,50 @@ std::string Creature::GetDebugInfo() const
         << "AIName: " << GetAIName() << " ScriptName: " << GetScriptName()
         << " WaypointPath: " << GetWaypointPath() << " SpawnId: " << GetSpawnId();
     return sstr.str();
+}
+
+void Creature::SetInCombatWithZone()
+{
+    if (!CanHaveThreatList())
+    {
+        TC_LOG_ERROR("entities.unit", "Creature entry %u call SetInCombatWithZone but creature cannot have threat list.", GetEntry());
+        return;
+    }
+
+    Map* map = GetMap();
+
+    if (!map->IsDungeon())
+    {
+        TC_LOG_ERROR("entities.unit", "Creature entry %u call SetInCombatWithZone for map (id: %u) that isn't an instance.", GetEntry(), map->GetId());
+        return;
+    }
+
+    Map::PlayerList const& PlList = map->GetPlayers();
+
+    if (PlList.isEmpty())
+        return;
+
+    for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+    {
+        if (Player* player = i->GetSource())
+        {
+            if (player->IsGameMaster())
+                continue;
+
+            if (player->IsAlive())
+                EngageWithTarget(player);
+        }
+    }
+}
+
+void Creature::DespawnCreaturesInArea2(uint32 entry, float range)
+{
+    std::list<Creature*> creatures;
+    GetCreatureListWithEntryInGrid(creatures, entry, range);
+
+    if (creatures.empty())
+        return;
+
+    for (std::list<Creature*>::iterator iter = creatures.begin(); iter != creatures.end(); ++iter)
+        (*iter)->DespawnOrUnsummon();
 }

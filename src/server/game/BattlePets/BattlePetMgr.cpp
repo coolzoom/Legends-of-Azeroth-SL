@@ -458,8 +458,13 @@ void BattlePetMgr::AddPet(uint32 species, uint32 display, uint16 breed, BattlePe
     updates.push_back(std::ref(pet));
     SendUpdates(std::move(updates), true);
 
+
     player->UpdateCriteria(CriteriaType::UniquePetsOwned);
     player->UpdateCriteria(CriteriaType::LearnedNewPet, species);
+
+    //_owner->GetPlayer()->UpdateCriteria(CriteriaType::UniquePetsOwned);
+    //_owner->GetPlayer()->UpdateCriteria(CriteriaType::LearnedNewPet, species);
+
 }
 
 void BattlePetMgr::RemovePet(ObjectGuid guid)
@@ -659,11 +664,18 @@ void BattlePetMgr::SummonPet(ObjectGuid guid)
     if (!speciesEntry)
         return;
 
+
     // TODO: set proper CreatureID for spell SPELL_SUMMON_BATTLE_PET (default EffectMiscValueA is 40721 - Murkimus the Gladiator)
     Player* player = _owner->GetPlayer();
     player->SetSummonedBattlePetGUID(guid);
     player->SetCurrentBattlePetBreedQuality(pet->PacketInfo.Quality);
     player->CastSpell(player, speciesEntry->SummonSpellID ? speciesEntry->SummonSpellID : uint32(SPELL_SUMMON_BATTLE_PET));
+
+    // TODO: set proper CreatureID for spell DEFAULT_SUMMON_BATTLE_PET_SPELL (default EffectMiscValueA is 40721 - Murkimus the Gladiator)
+    //_owner->GetPlayer()->SetSummonedBattlePetGUID(guid);
+    //_owner->GetPlayer()->SetCurrentBattlePetBreedQuality(pet->PacketInfo.Quality);
+    //_owner->GetPlayer()->CastSpell(_owner->GetPlayer(), speciesEntry->SummonSpellID ? speciesEntry->SummonSpellID : uint32(DEFAULT_SUMMON_BATTLE_PET_SPELL));
+
 }
 
 void BattlePetMgr::DismissPet()

@@ -84,6 +84,10 @@ class TC_GAME_API CreatureAI : public UnitAI
         // Gets the id of the AI (script id)
         uint32 GetId() const { return _scriptId; }
 
+
+        // Gets the id of the AI (script id)
+        uint32 GetId() const { return _scriptId; }
+
         void Talk(uint8 id, WorldObject const* whisperTarget = nullptr);
 
         /// == Reactions At =================================
@@ -213,7 +217,7 @@ class TC_GAME_API CreatureAI : public UnitAI
 
         virtual void PassengerBoarded(Unit* /*passenger*/, int8 /*seatId*/, bool /*apply*/) { }
 
-        virtual void OnSpellClick(Unit* /*clicker*/, bool /*spellClickHandled*/) { }
+        void OnSpellClick(Unit* /*clicker*/, bool /*spellClickHandled*/) { }
 
         virtual bool CanSeeAlways(WorldObject const* /*obj*/) { return false; }
 
@@ -241,9 +245,13 @@ class TC_GAME_API CreatureAI : public UnitAI
 
         CreatureBoundary const* _boundary;
         bool _negateBoundary;
-
     private:
+
         void OnOwnerCombatInteraction(Unit* target);
+
+        //bool m_MoveInLineOfSight_locked;
+        //void _OnOwnerCombatInteraction(Unit* target);
+
 
         uint32 const _scriptId;
         bool _moveInLOSLocked;

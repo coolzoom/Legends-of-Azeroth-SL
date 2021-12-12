@@ -22,17 +22,18 @@
  */
 
 #include "ScriptMgr.h"
-#include "AreaTriggerAI.h"
 #include "CellImpl.h"
 #include "CreatureAIImpl.h" // for RAND()
 #include "GridNotifiersImpl.h"
 #include "Item.h"
 #include "ObjectAccessor.h"
 #include "Player.h"
+#include "Object.h"
 #include "SpellAuraEffects.h"
 #include "SpellHistory.h"
 #include "SpellMgr.h"
 #include "SpellScript.h"
+#include "AreaTriggerAI.h"
 
 enum ShamanSpells
 {
@@ -77,7 +78,7 @@ enum ShamanSpells
     SPELL_SHAMAN_TOTEMIC_POWER_ATTACK_POWER     = 28826,
     SPELL_SHAMAN_TOTEMIC_POWER_ARMOR            = 28827,
     SPELL_SHAMAN_WINDFURY_ATTACK                = 25504,
-    SPELL_SHAMAN_WIND_RUSH                      = 192082,
+	SPELL_SHAMAN_WIND_RUSH                      = 192082,
 };
 
 enum MiscSpells
@@ -461,7 +462,7 @@ class spell_sha_flametongue_weapon : public SpellScript
         if (!targetItem || !targetItem->GetTemplate()->IsWeapon())
             return;
 
-        player->CastSpell(targetItem, SPELL_SHAMAN_FLAMETONGUE_WEAPON_ENCHANT, true);
+            player->CastSpell(SPELL_SHAMAN_FLAMETONGUE_WEAPON_ENCHANT, true);
     }
 
     void Register() override
@@ -1233,8 +1234,10 @@ class spell_sha_t8_elemental_4p_bonus : public SpellScriptLoader
                 ASSERT(spellInfo->GetMaxTicks() > 0);
                 amount /= spellInfo->GetMaxTicks();
 
+                // Add remaining ticks to damage done
                 Unit* caster = eventInfo.GetActor();
                 Unit* target = eventInfo.GetProcTarget();
+               //amount += target->GetRemainingPeriodicAmount(caster->GetGUID(), SPELL_SHAMAN_ELECTRIFIED, SPELL_AURA_PERIODIC_DAMAGE);
 
                 CastSpellExtraArgs args(aurEff);
                 args.AddSpellBP0(amount);
@@ -1282,8 +1285,10 @@ class spell_sha_t9_elemental_4p_bonus : public SpellScriptLoader
                 ASSERT(spellInfo->GetMaxTicks() > 0);
                 amount /= spellInfo->GetMaxTicks();
 
+                // Add remaining ticks to damage done
                 Unit* caster = eventInfo.GetActor();
                 Unit* target = eventInfo.GetProcTarget();
+                //amount += target->GetRemainingPeriodicAmount(caster->GetGUID(), SPELL_SHAMAN_LAVA_BURST_BONUS_DAMAGE, SPELL_AURA_PERIODIC_DAMAGE);
 
                 CastSpellExtraArgs args(aurEff);
                 args.AddSpellBP0(amount);
@@ -1376,8 +1381,10 @@ class spell_sha_t10_restoration_4p_bonus : public SpellScriptLoader
                 ASSERT(spellInfo->GetMaxTicks() > 0);
                 amount /= spellInfo->GetMaxTicks();
 
+                // Add remaining ticks to healing done
                 Unit* caster = eventInfo.GetActor();
                 Unit* target = eventInfo.GetProcTarget();
+                //amount += target->GetRemainingPeriodicAmount(caster->GetGUID(), SPELL_SHAMAN_CHAINED_HEAL, SPELL_AURA_PERIODIC_HEAL);
 
                 CastSpellExtraArgs args(aurEff);
                 args.AddSpellBP0(amount);
@@ -1509,5 +1516,5 @@ void AddSC_shaman_spell_scripts()
     new spell_sha_t10_elemental_4p_bonus();
     new spell_sha_t10_restoration_4p_bonus();
     new spell_sha_windfury();
-    RegisterAreaTriggerAI(areatrigger_sha_wind_rush_totem);
+	RegisterAreaTriggerAI(areatrigger_sha_wind_rush_totem);
 }
