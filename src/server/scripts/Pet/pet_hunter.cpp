@@ -75,7 +75,11 @@ class npc_pet_hunter_snake_trap : public CreatureScript
 
                 if (me->IsSummon() && !me->GetThreatManager().GetFixateTarget())
                 { // find new target
+
                     Unit* summoner = me->ToTempSummon()->GetSummonerUnit();
+                    //ASH
+                    //Unit* summoner = me->ToTempSummon()->GetSummoner();
+
 
                     std::vector<Unit*> targets;
                     for (std::pair<ObjectGuid const, PvPCombatReference*> const& pair : summoner->GetCombatManager().GetPvPCombatRefs())
