@@ -251,6 +251,12 @@ public:
             registry->SyncScriptNames();
     }
 
+    void SyncScriptNames() final override
+    {
+        for (auto const registry : _registries)
+            registry->SyncScriptNames();
+    }
+
     template<typename T>
     void QueueForDelayedDelete(T&& any)
     {
@@ -1094,6 +1100,10 @@ public:
         this->BeforeUnload();
 
         _scripts.clear();
+    }
+
+    void SyncScriptNames() final override
+    {
     }
 
     void SyncScriptNames() final override

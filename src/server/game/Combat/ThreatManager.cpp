@@ -290,6 +290,13 @@ void ThreatManager::EvaluateSuppressed(bool canExpire)
     }
 }
 
+static void SaveCreatureHomePositionIfNeed(Creature* c)
+{
+    MovementGeneratorType const movetype = c->GetMotionMaster()->GetCurrentMovementGeneratorType();
+    if (movetype == WAYPOINT_MOTION_TYPE || movetype == POINT_MOTION_TYPE || (c->IsAIEnabled() && c->AI()->IsEscorted()))
+        c->SetHomePosition(c->GetPosition());
+}
+
 void ThreatManager::AddThreat(Unit* target, float amount, SpellInfo const* spell, bool ignoreModifiers, bool ignoreRedirects)
 {
     // step 1: we can shortcut if the spell has one of the NO_THREAT attrs set - nothing will happen
@@ -402,7 +409,6 @@ void ThreatManager::AddThreat(Unit* target, float amount, SpellInfo const* spell
     if (!_owner->IsEngaged())
     {
         _owner->AtEngage(target);
-        UpdateVictim();
     }
 }
 
@@ -488,12 +494,19 @@ void ThreatManager::ClearAllThreat()
     }
 }
 
+
 void ThreatManager::NotifyDisengaged()
 {
     // note: i don't really like having this here
     // (maybe engage flag should be in creature ai? it's inherently an AI property...)
     if (_owner->IsEngaged())
         _owner->AtDisengage();
+
+    //SendClearAllThreatToClients();
+    //do
+    //    _myThreatListEntries.begin()->second->UnregisterAndFree();
+    //while (!_myThreatListEntries.empty());
+
 }
 
 void ThreatManager::FixateTarget(Unit* target)

@@ -127,6 +127,7 @@
 #include "WorldPacket.h"
 #include "WorldSession.h"
 #include "WorldStatePackets.h"
+#include "WorldQuestMgr.h"
 #include <G3D/g3dmath.h>
 #include <sstream>
 
@@ -970,7 +971,11 @@ void Player::Update(uint32 p_time)
             if (!aura->IsPermanent())
                 aura->SetDuration(aura->GetSpellInfo()->GetMaxDuration());
 
+
     Unit::AIUpdateTick(p_time);
+    //ash
+    //AIUpdateTick(p_time);
+
 
     // Update items that have just a limited lifetime
     if (now > m_Last_tick)
@@ -1509,6 +1514,242 @@ bool Player::TeleportTo(uint32 mapid, float x, float y, float z, float orientati
 
             //remove auras before removing from map...
             RemoveAurasWithInterruptFlags(SpellAuraInterruptFlags::Moving | SpellAuraInterruptFlags::Turning);
+
+            if (!GetSession()->PlayerLogout() && !(options & TELE_TO_SEAMLESS))
+            {
+                // send transfer packets
+                WorldPackets::Movement::TransferPending transferPending;
+                transferPending.MapID = mapid;
+                transferPending.OldMapPosition = GetPosition();
+                if (Transport* transport = GetTransport())
+                {
+                    transferPending.Ship = boost::in_place();
+                    transferPending.Ship->ID = transport->GetEntry();
+                    transferPending.Ship->OriginMapID = GetMapId();
+                }
+
+                SendDirectMessage(transferPending.Write());
+            }
+
+            // remove from old map now
+            if (oldmap)
+                oldmap->RemovePlayerFromMap(this, false);
+
+            m_teleport_dest = WorldLocation(mapid, x, y, z, orientation);
+            m_teleport_options = options;
+            SetFallInformation(0, GetPositionZ());
+            // if the player is saved before worldportack (at logout for example)
+            // this will be used instead of the current location in SaveToDB
+
+            if (!GetSession()->PlayerLogout())
+            {
+                WorldPackets::Movement::SuspendToken suspendToken;
+                suspendToken.SequenceIndex = m_movementCounter; // not incrementing
+                suspendToken.Reason = options & TELE_TO_SEAMLESS ? 2 : 1;
+                SendDirectMessage(suspendToken.Write());
+            }
+
+            // move packet sent by client always after far teleport
+            // code for finish transfer to new map called in WorldSession::HandleMoveWorldportAckOpcode at client packet
+            SetSemaphoreTeleportFar(true);
+        }
+        //else
+        //    return false;
+    }
+    return true;
+}
+
+bool Player::TeleportTo2(uint32 mapid, float x, float y, float z, float orientation, uint32 options, uint32 optionParam)
+{
+    if (!MapManager::IsValidMapCoord(mapid, x, y, z, orientation))
+    {
+        TC_LOG_ERROR("maps", "Player::TeleportTo: Invalid map (%d) or invalid coordinates (X: %f, Y: %f, Z: %f, O: %f) given when teleporting player '%s' (%s, MapID: %d, X: %f, Y: %f, Z: %f, O: %f).",
+            mapid, x, y, z, orientation, GetGUID().ToString().c_str(), GetName().c_str(), GetMapId(), GetPositionX(), GetPositionY(), GetPositionZ(), GetOrientation());
+        return false;
+    }
+
+    if (!GetSession()->HasPermission(rbac::RBAC_PERM_SKIP_CHECK_DISABLE_MAP) && DisableMgr::IsDisabledFor(DISABLE_TYPE_MAP, mapid, this))
+    {
+        TC_LOG_ERROR("entities.player.cheat", "Player::TeleportTo: Player '%s' (%s) tried to enter a forbidden map (MapID: %u)", GetGUID().ToString().c_str(), GetName().c_str(), mapid);
+        SendTransferAborted(mapid, TRANSFER_ABORT_MAP_NOT_ALLOWED);
+        return false;
+    }
+
+    // preparing unsummon pet if lost (we must get pet before teleportation or will not find it later)
+    Pet* pet = GetPet();
+
+    MapEntry const* mEntry = sMapStore.LookupEntry(mapid);
+
+    // don't let enter battlegrounds without assigned battleground id (for example through areatrigger)...
+    // don't let gm level > 1 either
+    if (!InBattleground() && mEntry->IsBattlegroundOrArena())
+        return false;
+
+    // client without expansion support
+    if (GetSession()->GetExpansion() < mEntry->Expansion())
+    {
+        TC_LOG_DEBUG("maps", "Player '%s' (%s) using client without required expansion tried teleporting to non accessible map (MapID: %u)",
+            GetName().c_str(), GetGUID().ToString().c_str(), mapid);
+
+        if (Transport* transport = GetTransport())
+        {
+            transport->RemovePassenger(this);
+            RepopAtGraveyard();                             // teleport to near graveyard if on transport, looks blizz like :)
+        }
+
+        SendTransferAborted(mapid, TRANSFER_ABORT_INSUF_EXPAN_LVL, mEntry->Expansion());
+
+        return false;                                       // normal client can't teleport to this map...
+    }
+    else
+        TC_LOG_DEBUG("maps", "Player %s (%s) is being teleported to map (MapID: %u)", GetName().c_str(), GetGUID().ToString().c_str(), mapid);
+
+    if (m_vehicle)
+        ExitVehicle();
+
+    // reset movement flags at teleport, because player will continue move with these flags after teleport
+    SetUnitMovementFlags(GetUnitMovementFlags() & MOVEMENTFLAG_MASK_HAS_PLAYER_STATUS_OPCODE);
+    m_movementInfo.ResetJump();
+    DisableSpline();
+
+    if (Transport* transport = GetTransport())
+    {
+        if (!(options & TELE_TO_NOT_LEAVE_TRANSPORT))
+            transport->RemovePassenger(this);
+    }
+
+    // The player was ported to another map and loses the duel immediately.
+    // We have to perform this check before the teleport, otherwise the
+    // ObjectAccessor won't find the flag.
+    if (duel && GetMapId() != mapid && GetMap()->GetGameObject(m_playerData->DuelArbiter))
+        DuelComplete(DUEL_FLED);
+
+    if (GetMapId() == mapid)
+    {
+        //lets reset far teleport flag if it wasn't reset during chained teleport
+        SetSemaphoreTeleportFar(false);
+        //setup delayed teleport flag
+        SetDelayedTeleportFlag(IsCanDelayTeleport());
+        //if teleport spell is cast in Unit::Update() func
+        //then we need to delay it until update process will be finished
+        if (IsHasDelayedTeleport())
+        {
+            SetSemaphoreTeleportNear(true);
+            //lets save teleport destination for player
+            m_teleport_dest = WorldLocation(mapid, x, y, z, orientation);
+            m_teleport_options = options;
+            m_teleport_option_param = optionParam;
+            return true;
+        }
+
+        if (!(options & TELE_TO_NOT_UNSUMMON_PET))
+        {
+            //same map, only remove pet if out of range for new position
+            if (pet && !pet->IsWithinDist3d(x, y, z, GetMap()->GetVisibilityRange()))
+                UnsummonPetTemporaryIfAny();
+        }
+
+        if (!(options & TELE_TO_NOT_LEAVE_COMBAT))
+            CombatStop();
+
+        // this will be used instead of the current location in SaveToDB
+        m_teleport_dest = WorldLocation(mapid, x, y, z, orientation);
+        m_teleport_options = options;
+        m_teleport_option_param = optionParam;
+        SetFallInformation(0, GetPositionZ());
+
+        // code for finish transfer called in WorldSession::HandleMovementOpcodes()
+        // at client packet CMSG_MOVE_TELEPORT_ACK
+        SetSemaphoreTeleportNear(true);
+        // near teleport, triggering send CMSG_MOVE_TELEPORT_ACK from client at landing
+        if (!GetSession()->PlayerLogout())
+            SendTeleportPacket(m_teleport_dest);
+    }
+    else
+    {
+        if (getClass() == CLASS_DEATH_KNIGHT && GetMapId() == MAP_EBON_HOLD_DK_START_ZONE && !IsGameMaster() && !HasSpell(50977))
+            return false;
+
+        // far teleport to another map
+        Map* oldmap = IsInWorld() ? GetMap() : nullptr;
+        // check if we can enter before stopping combat / removing pet / totems / interrupting spells
+
+        // Check enter rights before map getting to avoid creating instance copy for player
+        // this check not dependent from map instance copy and same for all instance copies of selected map
+        if (sMapMgr->PlayerCannotEnter(mapid, this, false))
+            return false;
+
+        // Seamless teleport can happen only if cosmetic maps match
+        if (!oldmap ||
+            (oldmap->GetEntry()->CosmeticParentMapID != int32(mapid) && int32(GetMapId()) != mEntry->CosmeticParentMapID &&
+                !((oldmap->GetEntry()->CosmeticParentMapID != -1) ^ (oldmap->GetEntry()->CosmeticParentMapID != mEntry->CosmeticParentMapID))))
+            options &= ~TELE_TO_SEAMLESS;
+
+        //I think this always returns true. Correct me if I am wrong.
+        // If the map is not created, assume it is possible to enter it.
+        // It will be created in the WorldPortAck.
+        //Map* map = sMapMgr->FindBaseNonInstanceMap(mapid);
+        //if (!map || map->CanEnter(this))
+        {
+            //lets reset near teleport flag if it wasn't reset during chained teleports
+            SetSemaphoreTeleportNear(false);
+            //setup delayed teleport flag
+            SetDelayedTeleportFlag(IsCanDelayTeleport());
+            //if teleport spell is cast in Unit::Update() func
+            //then we need to delay it until update process will be finished
+            if (IsHasDelayedTeleport())
+            {
+                SetSemaphoreTeleportFar(true);
+                //lets save teleport destination for player
+                m_teleport_dest = WorldLocation(mapid, x, y, z, orientation);
+                m_teleport_options = options;
+                m_teleport_option_param = optionParam;
+                return true;
+            }
+
+            SetSelection(ObjectGuid::Empty);
+
+            CombatStop();
+
+            ResetContestedPvP();
+
+            // remove player from battleground on far teleport (when changing maps)
+            if (Battleground const* bg = GetBattleground())
+            {
+                // Note: at battleground join battleground id set before teleport
+                // and we already will found "current" battleground
+                // just need check that this is targeted map or leave
+                if (bg->GetMapId() != mapid)
+                    LeaveBattleground(false);                   // don't teleport to entry point
+            }
+
+            // remove arena spell coldowns/buffs now to also remove pet's cooldowns before it's temporarily unsummoned
+            if (mEntry->IsBattleArena())
+            {
+                RemoveArenaSpellCooldowns(true);
+                RemoveArenaAuras();
+                if (pet)
+                    pet->RemoveArenaAuras();
+            }
+
+            // remove pet on map change
+            if (pet)
+                UnsummonPetTemporaryIfAny();
+
+            // remove all dyn objects
+            RemoveAllDynObjects();
+
+            // remove all areatriggers entities
+            RemoveAllAreaTriggers();
+
+            // stop spellcasting
+            // not attempt interrupt teleportation spell at caster teleport
+            if (!(options & TELE_TO_SPELL))
+                if (IsNonMeleeSpellCast(true))
+                    InterruptNonMeleeSpells(true);
+
+            //remove auras before removing from map...
+            //RemoveAurasWithInterruptFlags(SpellAuraInterruptFlags(AURA_INTERRUPT_FLAG_CHANGE_MAP | AURA_INTERRUPT_FLAG_MOVE | AURA_INTERRUPT_FLAG_TURNING));
 
             if (!GetSession()->PlayerLogout() && !(options & TELE_TO_SEAMLESS))
             {
@@ -9348,7 +9589,7 @@ void Player::SendInitWorldStates(uint32 zoneId, uint32 areaId)
             }
             break;
         case 3358: // Arathi Basin
-            if (battleground && (battleground->GetTypeID(true) == BATTLEGROUND_AB || battleground->GetTypeID(true) == BATTLEGROUND_DOM_AB))
+            if (battleground && battleground->GetTypeID(true) == BATTLEGROUND_AB)
                 battleground->FillInitialWorldStates(packet);
             else
             {
@@ -23641,25 +23882,6 @@ void Player::UpdatePotionCooldown(Spell* spell)
     m_lastPotionId = 0;
 }
 
-void Player::UpdateReviveBattlePetCooldown()
-{
-    SpellInfo const* reviveBattlePetSpellInfo = sSpellMgr->GetSpellInfo(SPELL_REVIVE_BATTLE_PETS, DIFFICULTY_NONE);
-
-    if (reviveBattlePetSpellInfo && HasSpell(SPELL_REVIVE_BATTLE_PETS))
-    {
-        SpellHistory::Duration remainingCooldown = GetSpellHistory()->GetRemainingCategoryCooldown(reviveBattlePetSpellInfo);
-        if (remainingCooldown > SpellHistory::Duration::zero())
-        {
-            if (remainingCooldown < REVIVE_BATTLE_PETS_COOLDOWN)
-                GetSpellHistory()->ModifyCooldown(reviveBattlePetSpellInfo, REVIVE_BATTLE_PETS_COOLDOWN - remainingCooldown);
-        }
-        else
-        {
-            GetSpellHistory()->StartCooldown(reviveBattlePetSpellInfo, 0, nullptr, false, Milliseconds(REVIVE_BATTLE_PETS_COOLDOWN));
-        }
-    }
-}
-
 void Player::SetResurrectRequestData(WorldObject const* caster, uint32 health, uint32 mana, uint32 appliedAura)
 {
     ASSERT(!IsResurrectRequested());
@@ -28267,6 +28489,25 @@ void Player::SendMovementSetCollisionHeight(float height, WorldPackets::Movement
     SendMessageToSet(updateCollisionHeight.Write(), false);
 }
 
+void Player::AddMovieDelayedAction2(uint32 movieId, std::function<void()>&& function)
+{
+    MovieDelayedActions.push_back(std::pair<uint32, std::function<void()>>(movieId, function));
+}
+
+void Player::RemoveMovieDelayedAction2(uint32 movieId)
+{
+    auto itr = std::find_if(MovieDelayedActions.begin(), MovieDelayedActions.end(), [movieId](const std::pair<uint32, std::function<void()>>& elem) -> bool
+        {
+            return elem.first == movieId;
+        });
+
+    if (itr != MovieDelayedActions.end())
+    {
+        (*itr).second = nullptr;
+        MovieDelayedActions.erase(itr);
+    }
+}
+
 void Player::SendPlayerChoice(ObjectGuid sender, int32 choiceId)
 {
     PlayerChoice const* playerChoice = sObjectMgr->GetPlayerChoice(choiceId);
@@ -28789,6 +29030,20 @@ uint32 Player::GetDefaultSpecId() const
     return ASSERT_NOTNULL(sDB2Manager.GetDefaultChrSpecializationForClass(getClass()))->ID;
 }
 
+uint32 Player::GetRoleForGroup2() const
+{
+    return GetRoleBySpecializationId2(GetSpecializationId2());
+}
+
+uint32 Player::GetRoleBySpecializationId2(uint32 specializationId)
+{
+    if (specializationId)
+        if (ChrSpecializationEntry const* spec = sChrSpecializationStore.LookupEntry(specializationId))
+            return spec->Role;
+
+    return ROLE_DAMAGE;
+}
+
 void Player::SendSpellCategoryCooldowns() const
 {
     WorldPackets::Spells::CategoryCooldown cooldowns;
@@ -29013,9 +29268,98 @@ bool Player::CanEnableWarModeInArea() const
     return area->Flags[1] & AREA_FLAG_2_CAN_ENABLE_WAR_MODE;
 }
 
+
 std::string Player::GetDebugInfo() const
 {
     std::stringstream sstr;
     sstr << Unit::GetDebugInfo();
     return sstr.str();
+}
+void Player::PlayConversation(uint32 conversationId)
+{
+    Conversation::CreateConversation(conversationId, this, GetPosition(), { GetGUID() });
+}
+
+void Player::PlayConversation2(uint32 conversationId)
+{
+    Conversation::CreateConversation(conversationId, this, GetPosition(), { GetGUID() });
+}
+
+bool Player::HasWorldQuestEnabled(uint8 expansion) const
+{
+    if (expansion == EXPANSION_LEGION)
+        return MeetPlayerCondition(41005);
+    if (expansion == EXPANSION_BATTLE_FOR_AZEROTH)
+        return GetQuestStatus(51918) == QUEST_STATUS_REWARDED || // Union of Kul'Tiras
+        GetQuestStatus(51916) == QUEST_STATUS_REWARDED;   // Union of Zandalar
+    if (expansion == EXPANSION_SHADOWLANDS)
+        return GetQuestStatus(62796) == QUEST_STATUS_REWARDED ||
+        GetQuestStatus(62796) == QUEST_STATUS_REWARDED;
+    return false;
+}
+
+void Player::ForceCompleteQuest(uint32 quest_id)
+{
+    Quest const* quest = sObjectMgr->GetQuestTemplate(quest_id);
+    if (!quest)
+        return;
+
+    for (uint32 i = 0; i < quest->Objectives.size(); ++i)
+    {
+        QuestObjective const& obj = quest->Objectives[i];
+
+        switch (obj.Type)
+        {
+        case QUEST_OBJECTIVE_ITEM:
+        {
+            uint32 curItemCount = GetItemCount(obj.ObjectID, true);
+            ItemPosCountVec dest;
+            uint8 msg = CanStoreNewItem(NULL_BAG, NULL_SLOT, dest, obj.ObjectID, obj.Amount - curItemCount);
+            if (msg == EQUIP_ERR_OK)
+            {
+                Item* item = StoreNewItem(dest, obj.ObjectID, true);
+                SendNewItem(item, obj.Amount - curItemCount, true, false);
+            }
+            break;
+        }
+        case QUEST_OBJECTIVE_MONSTER:
+        {
+            if (CreatureTemplate const* creatureInfo = sObjectMgr->GetCreatureTemplate(obj.ObjectID))
+                for (uint16 z = 0; z < obj.Amount; ++z)
+                    KilledMonster(creatureInfo, ObjectGuid::Empty);
+            break;
+        }
+        case QUEST_OBJECTIVE_GAMEOBJECT:
+        {
+            for (uint16 z = 0; z < obj.Amount; ++z)
+                KillCreditGO(obj.ObjectID);
+            break;
+        }
+        case QUEST_OBJECTIVE_MIN_REPUTATION:
+        {
+            uint32 curRep = GetReputationMgr().GetReputation(obj.ObjectID);
+            if (curRep < uint32(obj.Amount))
+                if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(obj.ObjectID))
+                    GetReputationMgr().SetReputation(factionEntry, obj.Amount);
+            break;
+        }
+        case QUEST_OBJECTIVE_MAX_REPUTATION:
+        {
+            uint32 curRep = GetReputationMgr().GetReputation(obj.ObjectID);
+            if (curRep > uint32(obj.Amount))
+                if (FactionEntry const* factionEntry = sFactionStore.LookupEntry(obj.ObjectID))
+                    GetReputationMgr().SetReputation(factionEntry, obj.Amount);
+            break;
+        }
+        case QUEST_OBJECTIVE_MONEY:
+        {
+            ModifyMoney(obj.Amount);
+            break;
+        }
+        }
+    }
+
+    if (GetQuestStatus(quest_id) != QUEST_STATUS_COMPLETE)
+        CompleteQuest(quest_id);
+
 }

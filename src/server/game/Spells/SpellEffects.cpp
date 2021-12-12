@@ -1699,18 +1699,13 @@ void Spell::EffectOpenLock()
                 return;
             }
         }
-        else if (goInfo->type == GAMEOBJECT_TYPE_CAPTURE_POINT)
-        {
-            gameObjTarget->AssaultCapturePoint(player);
-            return;
-        }
-        else if (goInfo->type == GAMEOBJECT_TYPE_FLAGSTAND || goInfo->type == GAMEOBJECT_TYPE_NEW_FLAG)
+        else if (goInfo->type == GAMEOBJECT_TYPE_FLAGSTAND)
         {
             //CanUseBattlegroundObject() already called in CheckCast()
             // in battleground check
             if (Battleground* bg = player->GetBattleground())
             {
-                if (bg->GetTypeID(true) == BATTLEGROUND_EY || bg->GetTypeID(true) == BATTLEGROUND_WS)
+                if (bg->GetTypeID(true) == BATTLEGROUND_EY)
                     bg->EventPlayerClickedOnFlag(player, gameObjTarget);
                 return;
             }
@@ -1728,7 +1723,7 @@ void Spell::EffectOpenLock()
         /// @todo Add script for spell 41920 - Filling, becouse server it freze when use this spell
         // handle outdoor pvp object opening, return true if go was registered for handling
         // these objects must have been spawned by outdoorpvp!
-        else if (gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_GOOBER && sOutdoorPvPMgr->HandleOpenGo(player, gameObjTarget) || gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_NEW_FLAG_DROP)
+        else if (gameObjTarget->GetGOInfo()->type == GAMEOBJECT_TYPE_GOOBER && sOutdoorPvPMgr->HandleOpenGo(player, gameObjTarget))
             return;
         lockId = goInfo->GetLockId();
         guid = gameObjTarget->GetGUID();
@@ -3060,7 +3055,7 @@ void Spell::EffectSummonObjectWild()
     // Wild object not have owner and check clickable by players
     map->AddToMap(go);
 
-    if (go->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP || go->GetGoType() == GAMEOBJECT_TYPE_NEW_FLAG_DROP)
+    if (go->GetGoType() == GAMEOBJECT_TYPE_FLAGDROP)
         if (Player* player = m_caster->ToPlayer())
             if (Battleground* bg = player->GetBattleground())
                 bg->SetDroppedFlagGUID(go->GetGUID(), player->GetTeam() == ALLIANCE ? TEAM_HORDE: TEAM_ALLIANCE);
@@ -5490,7 +5485,11 @@ void Spell::EffectUncageBattlePet()
 
     battlePetMgr->AddPet(speciesId, displayId, breed, BattlePetBreedQuality(quality), level);
 
-    player->SendPlaySpellVisual(player, SPELL_VISUAL_UNCAGE_PET, 0, 0, 0.f, false);
+    if (speciesEntry->SummonSpellID)
+        if (!player->HasSpell(speciesEntry->SummonSpellID))
+            player->LearnSpell(speciesEntry->SummonSpellID, false);
+
+	  player->SendPlaySpellVisual(player, SPELL_VISUAL_UNCAGE_PET, 0, 0, 0.f, false);
 
     player->DestroyItem(m_CastItem->GetBagSlot(), m_CastItem->GetSlot(), true);
     m_CastItem = nullptr;

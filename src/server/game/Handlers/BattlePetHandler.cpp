@@ -86,6 +86,7 @@ void WorldSession::HandleQueryBattlePetName(WorldPackets::BattlePet::QueryBattle
     response.Allow = !response.Name.empty();
 
     SendPacket(response.Write());
+
 }
 
 void WorldSession::HandleBattlePetDeletePet(WorldPackets::BattlePet::BattlePetDeletePet& battlePetDeletePet)

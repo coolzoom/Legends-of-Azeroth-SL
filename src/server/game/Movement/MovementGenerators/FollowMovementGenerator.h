@@ -23,6 +23,7 @@
 #include "MovementGenerator.h"
 #include "Optional.h"
 #include "Position.h"
+#include "Optional.h"
 
 class PathGenerator;
 class Unit;

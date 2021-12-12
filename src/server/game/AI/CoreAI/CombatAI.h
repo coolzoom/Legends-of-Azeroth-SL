@@ -38,24 +38,35 @@ class TC_GAME_API CombatAI : public CreatureAI
     public:
         using CreatureAI::CreatureAI;
 
+        enum CombatAIEnum
+        {
+            EVENT_UPDATE_VICTIM = 5000,
+            POINT_ID_COMBAT_MOVEMENT = 5000,
+        };
+
         void InitializeAI() override;
         void Reset() override;
         void JustEngagedWith(Unit* who) override;
         void JustDied(Unit* killer) override;
         void UpdateAI(uint32 diff) override;
         void SpellInterrupted(uint32 spellId, uint32 unTimeMs) override;
-
+        void MoveCombat(Position destination);
         static int32 Permissible(Creature const* /*creature*/) { return PERMIT_BASE_NO; }
 
     protected:
+        Optional<Position> combatMoveDest;
         EventMap Events;
-        SpellVector Spells;
+        SpellVector Spells;//SpellVct spells;
 };
 
 class TC_GAME_API CasterAI : public CombatAI
 {
     public:
+
         explicit CasterAI(Creature* creature, uint32 scriptId = {}) : CombatAI(creature, scriptId) { _attackDistance = MELEE_RANGE; }
+
+        //explicit CasterAI(Creature* c, uint32 scriptId = {}) : CombatAI(c, scriptId) { m_attackDist = MELEE_RANGE; }
+
         void InitializeAI() override;
         void AttackStart(Unit* victim) override { AttackStartCaster(victim, _attackDistance); }
         void UpdateAI(uint32 diff) override;

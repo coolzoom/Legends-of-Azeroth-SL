@@ -306,7 +306,7 @@ Creature::Creature(bool isWorldObject): Unit(isWorldObject), MapObject(), m_grou
     m_defaultMovementType(IDLE_MOTION_TYPE), m_spawnId(UI64LIT(0)), m_equipmentId(0), m_originalEquipmentId(0), m_AlreadyCallAssistance(false), m_AlreadySearchedAssistance(false), m_cannotReachTarget(false), m_cannotReachTimer(0),
     m_meleeDamageSchoolMask(SPELL_SCHOOL_MASK_NORMAL), m_originalEntry(0), m_homePosition(), m_transportHomePosition(), m_creatureInfo(nullptr), m_creatureData(nullptr), _waypointPathId(0), _currentWaypointNodeInfo(0, 0),
     m_formation(nullptr), m_triggerJustAppeared(true), m_respawnCompatibilityMode(false), m_focusSpell(nullptr), m_focusDelay(0), m_shouldReacquireTarget(false), m_suppressedOrientation(0.0f), _lastDamagedTime(0),
-    _regenerateHealth(true), _regenerateHealthLock(false), _sparringHealthPct(0)
+    _regenerateHealth(true), _regenerateHealthLock(false)
 {
     m_regenTimer = CREATURE_REGEN_INTERVAL;
 
@@ -566,6 +566,117 @@ bool Creature::InitEntry(uint32 entry, CreatureData const* data /*= nullptr*/)
     SetSpeedRate(MOVE_SWIM,   1.0f); // using 1.0 rate
     SetSpeedRate(MOVE_FLIGHT, 1.0f); // using 1.0 rate
 
+
+
+    //Stitch vitesse de deplacement des creatures par type & famille
+    uint16 Crtype = GetCreatureTemplate()->type;
+    uint16 Crfamily = GetCreatureTemplate()->family;
+    float Crspeed = GetCreatureTemplate()->speed_walk;
+
+    // TYPE
+        //elementaire ,	Mort-vivant
+    if (Crspeed == 1.0f)
+    {
+        if (Crtype == CREATURE_TYPE_UNDEAD || Crtype == CREATURE_TYPE_ELEMENTAL)
+        {
+            SetSpeedRate(MOVE_WALK, 0.5f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 0.8f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.4f);				// en nageant
+        }
+        // Geant
+        if (Crtype == CREATURE_TYPE_GIANT)
+        {
+            SetSpeedRate(MOVE_WALK, 0.8f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.2f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.8f);				// en nageant
+        }
+        //Machine
+        if (Crtype == CREATURE_TYPE_MECHANICAL)
+        {
+            SetSpeedRate(MOVE_WALK, 0.65f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.0f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.65f);				// en nageant
+        }
+        // Bestiole , Mascotte pacifique , Mascotte sauvage , Nuage de gaz
+        if (Crtype == CREATURE_TYPE_CRITTER || Crtype == CREATURE_TYPE_NON_COMBAT_PET || Crtype == CREATURE_TYPE_WILD_PET || Crtype == CREATURE_TYPE_GAS_CLOUD)
+        {
+            SetSpeedRate(MOVE_WALK, 0.3f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.0f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.5f);				// en nageant
+        }
+        // Humanoide , Non specifi�
+        if (Crtype == CREATURE_TYPE_HUMANOID || Crtype == CREATURE_TYPE_NOT_SPECIFIED)
+        {
+            SetSpeedRate(MOVE_WALK, 0.6f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.0f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.6f);				// en nageant
+        }
+    }
+
+    // FAMILY
+    if (Crspeed == 1.0f)
+    {
+        //Rhinoceros, ours, Gorille, Hydre ,Infernal, Mamouth
+        if (Crfamily == CREATURE_FAMILY_CLEFTHOOF || Crfamily == CREATURE_FAMILY_BEAR || Crfamily == CREATURE_FAMILY_GORILLA || Crfamily == CREATURE_FAMILY_HYDRA || Crfamily == CREATURE_FAMILY_INFERNAL || Crfamily == CREATURE_FAMILY_MAMMOTH)
+        {
+            SetSpeedRate(MOVE_WALK, 0.6f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.3f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.5f);				// en nageant
+        }
+        // Oiseau de proie,Chauve souris,Faucon dragon, Papillon de nuit,oiseau charognard, Pterreurdactyle
+        if (Crfamily == CREATURE_FAMILY_BIRD_OF_PREY || Crfamily == CREATURE_FAMILY_BAT || Crfamily == CREATURE_FAMILY_DRAGONHAWK || Crfamily == CREATURE_FAMILY_MOTH || Crfamily == CREATURE_FAMILY_CARRION_BIRD || Crfamily == CREATURE_FAMILY_PTERRORDAX)
+        {
+            SetSpeedRate(MOVE_WALK, 1.5f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.5f);				// en combat
+            SetSpeedRate(MOVE_FLIGHT, 1.5f);			// en volant
+        }
+        // Loup, felin, sanglier, Raptor, Hyene, Ravageur,Renard, Porc-epic, Serpent,Ravageur
+        if (Crfamily == CREATURE_FAMILY_WOLF || Crfamily == CREATURE_FAMILY_CAT || Crfamily == CREATURE_FAMILY_BOAR || Crfamily == CREATURE_FAMILY_RAPTOR || Crfamily == CREATURE_FAMILY_HYENA || Crfamily == CREATURE_FAMILY_RAVAGER || Crfamily == CREATURE_FAMILY_FOX || Crfamily == CREATURE_FAMILY_SERPENT || Crfamily == CREATURE_FAMILY_RAVAGER)
+        {
+            SetSpeedRate(MOVE_WALK, 0.8f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.3f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.5f);				// en nageant
+        }
+        // crocodile, Crabe, Tortue, Serpent, Goule, Singe, Zombie, Basilic, Araignee, Grue,Ver, Lezard, crapaud,Carapid
+        if (Crfamily == CREATURE_FAMILY_CROCOLISK || Crfamily == CREATURE_FAMILY_CRAB || Crfamily == CREATURE_FAMILY_TURTLE || Crfamily == CREATURE_FAMILY_SERPENT || Crfamily == CREATURE_FAMILY_GHOUL || Crfamily == CREATURE_FAMILY_MONKEY || Crfamily == CREATURE_FAMILY_ZOMBIE || Crfamily == CREATURE_FAMILY_BASILISK || Crfamily == CREATURE_FAMILY_SPIDER || Crfamily == CREATURE_FAMILY_CRANE || Crfamily == CREATURE_FAMILY_WORM || Crfamily == CREATURE_FAMILY_LIZARD || Crfamily == CREATURE_FAMILY_TOAD || Crfamily == CREATURE_FAMILY_CARAPID)
+        {
+            SetSpeedRate(MOVE_WALK, 0.4f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.0f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.5f);				// en nageant
+        }
+        //Scorpion, Chevre, Cerf , Porc epic , Bovin, Chameau
+        if (Crfamily == CREATURE_FAMILY_SCORPID || Crfamily == CREATURE_FAMILY_GRUFFHORN || Crfamily == CREATURE_FAMILY_STAG || Crfamily == CREATURE_FAMILY_RODENT || Crfamily == CREATURE_FAMILY_OXEN || Crfamily == 0 || Crfamily == 157 || Crfamily == CREATURE_FAMILY_CAMEL) //////
+        {
+            SetSpeedRate(MOVE_WALK, 0.5f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.0f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.5f);				// en nageant
+        }
+        //elementaire de feu, elem. de tempete,elementaire de terre,Water Elemental
+        if (Crfamily == CREATURE_FAMILY_FIREELEMENTAL || Crfamily == CREATURE_FAMILY_STORMELEMENTAL || Crfamily == CREATURE_FAMILY_EARTHELEMENTAL || Crfamily == CREATURE_FAMILY_STORMELEMENTAL)
+        {
+            SetSpeedRate(MOVE_WALK, 1.8f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.8f);				// en combat
+        }
+        //Imp , Goul , Custom , Trotteur aquatique , Courser
+        if (Crfamily == CREATURE_FAMILY_IMP || Crfamily == CREATURE_FAMILY_BEETLE || Crfamily == CREATURE_FAMILY_HORSE_CUSTOM || CREATURE_FAMILY_WATERSTRIDER || CREATURE_FAMILY_COURSER)
+        {
+            SetSpeedRate(MOVE_WALK, 0.5f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.2f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.5f);				// en nageant
+        }
+        //Serpent des vents,Succube,Doomguard,Raie du Neant,Guepe,Seigneur du Vide
+        if (Crfamily == CREATURE_FAMILY_WIND_SERPENT || Crfamily == CREATURE_FAMILY_SUCCUBUS || Crfamily == CREATURE_FAMILY_DOOMGUARD || Crfamily == CREATURE_FAMILY_RAY || Crfamily == CREATURE_FAMILY_WASP || Crfamily == CREATURE_FAMILY_VOIDLORD)
+        {
+            SetSpeedRate(MOVE_WALK, 0.75f);				// hors combat
+            SetSpeedRate(MOVE_RUN, 1.0f);				// en combat
+            SetSpeedRate(MOVE_SWIM, 0.8f);				// en nageant
+        }
+
+
+    }
+
+
+
     // Will set UNIT_FIELD_BOUNDINGRADIUS, UNIT_FIELD_COMBATREACH and UNIT_FIELD_DISPLAYSCALE
     SetObjectScale(cinfo->scale);
 
@@ -674,7 +785,6 @@ bool Creature::UpdateEntry(uint32 entry, CreatureData const* data /*= nullptr*/,
     InitializeMovementFlags();
 
     LoadCreaturesAddon();
-    LoadCreaturesSparringHealth();
     LoadTemplateImmunities();
 
     GetThreatManager().EvaluateSuppressed();
@@ -845,9 +955,17 @@ void Creature::Update(uint32 diff)
                 }
             }
 
-
+            //tcmaster
             // do not allow the AI to be changed during update
             Unit::AIUpdateTick(diff);
+
+
+            //ash
+            // do not allow the AI to be changed during update
+            //m_AI_locked = true;
+            //Unit::AIUpdateTick(diff);
+            //m_AI_locked = false;
+
 
             // creature can be dead after UpdateAI call
             // CORPSE/DEAD state will processed at next tick (in other case death timer will be updated unexpectedly)
@@ -1002,13 +1120,33 @@ void Creature::DoFleeToGetAssistance()
 
 bool Creature::AIM_Destroy()
 {
+    //tcmaster
     PopAI();
     RefreshAI();
+
+    //ash
+    //if (m_AI_locked)
+    //{
+    //    TC_LOG_DEBUG("scripts", "AIM_Destroy: failed to destroy, locked.");
+    //    return false;
+    //}
+
+    //SetAI(nullptr);
+
     return true;
 }
 
 bool Creature::AIM_Create(CreatureAI* ai /*= nullptr*/)
 {
+
+    //ash
+    // make sure nothing can change the AI during AI update
+    //if (m_AI_locked)
+    //{
+    //    TC_LOG_DEBUG("scripts", "AIM_Initialize: failed to init, locked.");
+    //    return false;
+    //}
+
     Motion_Initialize();
 
     SetAI(ai ? ai : FactorySelector::SelectAI(this));
@@ -1114,7 +1252,6 @@ bool Creature::Create(ObjectGuid::LowType guidlow, Map* map, uint32 entry, Posit
     }
 
     LoadCreaturesAddon();
-    LoadCreaturesSparringHealth();
 
     //! Need to be called after LoadCreaturesAddon - MOVEMENTFLAG_HOVER is set there
     m_positionZ += GetHoverOffset();
@@ -1651,27 +1788,6 @@ float Creature::GetSpellDamageMod(int32 Rank) const
     }
 }
 
-uint32 Creature::CalculateDamageForSparring(Unit* attacker, uint32 damage)
-{
-    if (GetSparringHealthPct() == 0)
-        return damage;
-
-    if (!attacker->IsCreature() || attacker->IsCharmedOwnedByPlayerOrPlayer())
-        return damage;
-
-    if (GetHealthPct() <= GetSparringHealthPct())
-        return 0;
-
-    uint32 sparringHealth = GetMaxHealth() * GetSparringHealthPct() / 100;
-    if (GetHealth() - damage <= sparringHealth)
-        return GetHealth() - sparringHealth;
-
-    if (damage >= GetHealth())
-        return GetHealth() - 1;
-
-    return damage;
-}
-
 bool Creature::CreateFromProto(ObjectGuid::LowType guidlow, uint32 entry, CreatureData const* data /*= nullptr*/, uint32 vehId /*= 0*/)
 {
     SetZoneScript();
@@ -2178,7 +2294,6 @@ void Creature::setDeathState(DeathState s)
         Motion_Initialize();
         Unit::setDeathState(ALIVE);
         LoadCreaturesAddon();
-        LoadCreaturesSparringHealth();
     }
 }
 
@@ -2721,14 +2836,6 @@ bool Creature::LoadCreaturesAddon()
     }
 
     return true;
-}
-
-void Creature::LoadCreaturesSparringHealth()
-{
-    if (!_overridingSparringHealthPctValues.empty())
-        _sparringHealthPct = Trinity::Containers::SelectRandomContainerElement(_overridingSparringHealthPctValues);
-    else if (std::vector<float> const* templateValues = sObjectMgr->GetCreatureTemplateSparringValues(GetCreatureTemplate()->Entry))
-        _sparringHealthPct = Trinity::Containers::SelectRandomContainerElement(*templateValues);
 }
 
 /// Send a message to LocalDefense channel for players opposition team in the zone
@@ -3450,4 +3557,50 @@ std::string Creature::GetDebugInfo() const
         << "AIName: " << GetAIName() << " ScriptName: " << GetScriptName()
         << " WaypointPath: " << GetWaypointPath() << " SpawnId: " << GetSpawnId();
     return sstr.str();
+}
+
+void Creature::SetInCombatWithZone()
+{
+    if (!CanHaveThreatList())
+    {
+        TC_LOG_ERROR("entities.unit", "Creature entry %u call SetInCombatWithZone but creature cannot have threat list.", GetEntry());
+        return;
+    }
+
+    Map* map = GetMap();
+
+    if (!map->IsDungeon())
+    {
+        TC_LOG_ERROR("entities.unit", "Creature entry %u call SetInCombatWithZone for map (id: %u) that isn't an instance.", GetEntry(), map->GetId());
+        return;
+    }
+
+    Map::PlayerList const& PlList = map->GetPlayers();
+
+    if (PlList.isEmpty())
+        return;
+
+    for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+    {
+        if (Player* player = i->GetSource())
+        {
+            if (player->IsGameMaster())
+                continue;
+
+            if (player->IsAlive())
+                EngageWithTarget(player);
+        }
+    }
+}
+
+void Creature::DespawnCreaturesInArea2(uint32 entry, float range)
+{
+    std::list<Creature*> creatures;
+    GetCreatureListWithEntryInGrid(creatures, entry, range);
+
+    if (creatures.empty())
+        return;
+
+    for (std::list<Creature*>::iterator iter = creatures.begin(); iter != creatures.end(); ++iter)
+        (*iter)->DespawnOrUnsummon();
 }

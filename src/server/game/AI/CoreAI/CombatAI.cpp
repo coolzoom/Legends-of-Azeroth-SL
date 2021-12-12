@@ -53,6 +53,12 @@ void AggressorAI::UpdateAI(uint32 /*diff*/)
 // CombatAI
 /////////////////
 
+void CombatAI::MoveCombat(Position destination)
+{
+    me->GetMotionMaster()->MovePoint(POINT_ID_COMBAT_MOVEMENT, destination);
+    combatMoveDest = destination;
+}
+
 void CombatAI::InitializeAI()
 {
     for (uint32 i = 0; i < MAX_CREATURE_SPELLS; ++i)
@@ -276,7 +282,9 @@ void TurretAI::UpdateAI(uint32 /*diff*/)
 // VehicleAI
 //////////////
 
+
 VehicleAI::VehicleAI(Creature* creature, uint32 scriptId) : CreatureAI(creature, scriptId), _hasConditions(false), _conditionsTimer(VEHICLE_CONDITION_CHECK_TIME)
+//VehicleAI::VehicleAI(Creature* creature, uint32 scriptId) : CreatureAI(creature, scriptId), m_HasConditions(false), m_ConditionsTimer(VEHICLE_CONDITION_CHECK_TIME)
 {
     LoadConditions();
     _dismiss = false;

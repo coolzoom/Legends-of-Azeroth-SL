@@ -64,6 +64,7 @@
 #include "Vehicle.h"
 #include "VMapFactory.h"
 #include "World.h"
+#include "WorldQuestMgr.h"
 #include <G3D/g3dmath.h>
 #include <numeric>
 #include <limits>
@@ -235,6 +236,52 @@ ObjectMgr* ObjectMgr::instance()
     return &instance;
 }
 
+void WorldQuestMgr::LoadWorldQuestTemplates()
+{
+    CleanWorldQuestTemplates();
+
+    QueryResult result = WorldDatabase.Query("SELECT id, duration, variable, value FROM world_quest");
+    if (!result)
+        return;
+
+    do
+    {
+        Field* fields = result->Fetch();
+        uint32 questId = fields[0].GetUInt32();
+        Quest const* quest = sObjectMgr->GetQuestTemplate(questId);
+
+        if (!quest)
+        {
+            TC_LOG_ERROR("sql.sql", "World Quest: %u exist but no quest template found. Skip.", questId);
+            continue;
+        }
+
+        WorldQuestTemplate* worldQuestTemplate = new WorldQuestTemplate(questId, fields[1].GetUInt32(), fields[2].GetUInt32(), fields[3].GetUInt8());
+        AddWorldQuestTemplate(quest, worldQuestTemplate);
+
+    } while (result->NextRow());
+
+    WorldQuestContainer worldQuests = sObjectMgr->GetWorldQuestStore();
+    for (auto quests : worldQuests)
+    {
+        for (uint32 questId : quests.second)
+        {
+            if (Quest const* quest = sObjectMgr->GetQuestTemplate(questId))
+            {
+                auto itr = _worldQuestTemplates[quest->_expansion].find(questId);
+                if (itr == _worldQuestTemplates[quest->_expansion].end())
+                {
+                    WorldQuestTemplate* worldQuestTemplate = new WorldQuestTemplate(questId, 7200, 12506, 1);
+                    AddWorldQuestTemplate(quest, worldQuestTemplate);
+                }
+            }
+        }
+    }
+
+    if (_emissaryWorldQuestTemplates.size() < WORLD_QUEST_EMISSARY)
+        TC_LOG_ERROR("sql.sql", "World Quest: There is %lu emissary quests but %u needed...", _emissaryWorldQuestTemplates.size(), uint32(WORLD_QUEST_EMISSARY));
+}
+
 ObjectMgr::~ObjectMgr()
 {
 }
@@ -391,17 +438,10 @@ void ObjectMgr::LoadCreatureTemplates()
     // We load the creature models after loading but before checking
     LoadCreatureTemplateModels();
 
+    // Checking needs to be done after loading because of the difficulty self referencing
     for (auto const& ctPair : _creatureTemplateStore)
-    {
-        // Checking needs to be done after loading because of the difficulty self referencing
         CheckCreatureTemplate(&ctPair.second);
 
-        if (CreatureDifficultyEntry const* creatureDifficulty = sDB2Manager.GetCreatureDifficulty(ctPair.first))
-        {
-            if (creatureDifficulty->Flags[3] & CREATURE_DIFFICULTYFLAGS_4_NO_NPC_DAMAGE_BELOW_85PCT)
-                _creatureTemplateSparringStore[ctPair.first].push_back(85.0f);
-        }
-    }
     TC_LOG_INFO("server.loading", ">> Loaded " SZFMTD " creature definitions in %u ms", _creatureTemplateStore.size(), GetMSTimeDiffToNow(oldMSTime));
 }
 
@@ -754,47 +794,6 @@ void ObjectMgr::LoadCreatureTemplateAddons()
     while (result->NextRow());
 
     TC_LOG_INFO("server.loading", ">> Loaded %u creature template addons in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
-}
-
-void ObjectMgr::LoadCreatureTemplateSparring()
-{
-    uint32 oldMSTime = getMSTime();
-
-    //                                                 0               1
-    QueryResult result = WorldDatabase.Query("SELECT Entry, NoNPCDamageBelowHealthPct FROM creature_template_sparring");
-
-    if (!result)
-    {
-        TC_LOG_INFO("server.loading", ">> Loaded 0 creature template sparring definitions. DB table `creature_template_sparring` is empty.");
-        return;
-    }
-
-    uint32 count = 0;
-    do
-    {
-        Field* fields = result->Fetch();
-
-        uint32 entry = fields[0].GetUInt32();
-        uint8 noNPCDamageBelowHealthPct = fields[1].GetUInt8();
-
-        if (!sObjectMgr->GetCreatureTemplate(entry))
-        {
-            TC_LOG_ERROR("sql.sql", "Creature template (Entry: %u) does not exist but has a record in `creature_template_sparring`", entry);
-            continue;
-        }
-
-        if (noNPCDamageBelowHealthPct < 0 || noNPCDamageBelowHealthPct > 100)
-        {
-            TC_LOG_ERROR("sql.sql", "Creature (Entry: %u) has invalid NoNPCDamageBelowHealthPct (%u) defined in `creature_template_sparring`. Skipping",
-                entry, noNPCDamageBelowHealthPct);
-            continue;
-        }
-        _creatureTemplateSparringStore[entry].push_back(noNPCDamageBelowHealthPct);
-
-        ++count;
-    } while (result->NextRow());
-
-    TC_LOG_INFO("server.loading", ">> Loaded %u creature template sparring in %u ms", count, GetMSTimeDiffToNow(oldMSTime));
 }
 
 void ObjectMgr::LoadCreatureScalingData()
@@ -1429,11 +1428,6 @@ CreatureAddon const* ObjectMgr::GetCreatureTemplateAddon(uint32 entry) const
         return &(itr->second);
 
     return nullptr;
-}
-
-std::vector<float> const* ObjectMgr::GetCreatureTemplateSparringValues(uint32 entry) const
-{
-    return Trinity::Containers::MapGetValuePtr(_creatureTemplateSparringStore, entry);
 }
 
 CreatureMovementData const* ObjectMgr::GetCreatureMovementOverride(ObjectGuid::LowType spawnId) const
@@ -7724,16 +7718,6 @@ void ObjectMgr::LoadGameObjectTemplate()
                     got.barberChair.SitAnimKit = 0;
                 }
                 break;
-            case GAMEOBJECT_TYPE_NEW_FLAG:                  ///36
-                if (got.GetLockId())
-                    CheckGOLockId(&got, got.GetLockId(), 0);
-                break;
-            case GAMEOBJECT_TYPE_NEW_FLAG_DROP:                  ///37
-            {
-                if (got.GetLockId())
-                    CheckGOLockId(&got, got.GetLockId(), 0);
-                break;
-            }
             case GAMEOBJECT_TYPE_GARRISON_BUILDING:
                 if (uint32 transportMap = got.garrisonBuilding.SpawnMap)
                     _transportMaps.insert(transportMap);

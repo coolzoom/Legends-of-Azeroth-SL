@@ -87,7 +87,13 @@ enum WeatherState : uint32;
 enum XPColorChar : uint8;
 
 #define VISIBLE_RANGE       166.0f                          //MAX visible range (size of grid)
-
+#define RegisterCreatureScript(script) new script()
+#define RegisterSceneScript(script) new script()
+#define RegisterQuestScript(script) new script()
+#define RegisterConversationScript(script) new script()
+#define RegisterPlayerScript(script) new script()
+#define RegisterZoneScript(script) new script()
+#define RegisterItemScript(script) new script()
 
 /*
     @todo Add more script type classes.
@@ -1238,6 +1244,17 @@ class GenericAreaTriggerEntityScript : public AreaTriggerEntityScript
         GenericAreaTriggerEntityScript(char const* name) : AreaTriggerEntityScript(name) { }
         AreaTriggerAI* GetAI(AreaTrigger* at) const override { return new AI(at); }
 };
+
+template <class AI>
+class GenericInstanceMapScript : public InstanceMapScript
+{
+public:
+    GenericInstanceMapScript(char const* name, uint32 mapId) : InstanceMapScript(name, mapId) { }
+    InstanceScript* GetInstanceScript(InstanceMap* map) const override { return new AI(map); }
+};
+
+#define RegisterInstanceScript(ai_name, mapId) new GenericInstanceMapScript<ai_name>(#ai_name, mapId)
+
 #define RegisterAreaTriggerAI(ai_name) new GenericAreaTriggerEntityScript<ai_name>(#ai_name)
 
 #define sScriptMgr ScriptMgr::instance()

@@ -147,7 +147,6 @@ void HomeMovementGenerator<Creature>::DoFinalize(Creature* owner, bool active, b
         owner->LoadCreaturesAddon();
         if (owner->IsVehicle())
             owner->GetVehicleKit()->Reset(true);
-        owner->LoadCreaturesSparringHealth();
         owner->AI()->JustReachedHome();
     }
 }

@@ -21,7 +21,9 @@
 #include "Creature.h"
 #include "CreatureAIImpl.h"
 #include "CreatureTextMgr.h"
+
 #include "DB2Structure.h"
+
 #include "Errors.h"
 #include "Language.h"
 #include "Log.h"
@@ -35,6 +37,7 @@
 #include "Vehicle.h"
 #include "World.h"
 
+
 std::unordered_map<std::pair<uint32, Difficulty>, AISpellInfoType> UnitAI::AISpellInfo;
 AISpellInfoType* GetAISpellInfo(uint32 spellId, Difficulty difficulty)
 {
@@ -43,7 +46,11 @@ AISpellInfoType* GetAISpellInfo(uint32 spellId, Difficulty difficulty)
 
 CreatureAI::CreatureAI(Creature* creature, uint32 scriptId)
     : UnitAI(creature), me(creature), _boundary(nullptr),
+
       _negateBoundary(false), _scriptId(scriptId ? scriptId : creature->GetScriptId()), _moveInLOSLocked(false)
+
+      //_negateBoundary(false), _scriptId(scriptId ? scriptId : creature->GetScriptId()), m_MoveInLineOfSight_locked(false)
+
 {
     ASSERT(_scriptId, "A CreatureAI was initialized with an invalid scriptId!");
 }
@@ -98,16 +105,13 @@ void CreatureAI::DoZoneInCombat(Creature* creature /*= nullptr*/)
                 continue;
 
             creature->EngageWithTarget(player);
-
             for (Unit* pet : player->m_Controlled)
                 creature->EngageWithTarget(pet);
-
             if (Unit* vehicle = player->GetVehicleBase())
                 creature->EngageWithTarget(vehicle);
         }
     }
 }
-
 // scripts does not take care about MoveInLineOfSight loops
 // MoveInLineOfSight can be called inside another MoveInLineOfSight and cause stack overflow
 void CreatureAI::MoveInLineOfSight_Safe(Unit* who)

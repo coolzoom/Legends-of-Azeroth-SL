@@ -533,7 +533,7 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             if (targets.empty())
                 break;
 
-            if (e.action.cast.targetsLimit > 0 && targets.size() > e.action.cast.targetsLimit)
+            if (e.action.cast.targetsLimit)
                 Trinity::Containers::RandomResize(targets, e.action.cast.targetsLimit);
 
             for (WorldObject* target : targets)
@@ -2465,13 +2465,8 @@ void SmartScript::ProcessAction(SmartScriptHolder& e, Unit* unit, uint32 var0, u
             {
                 if (Player* playerTarget = target->ToPlayer())
                 {
-                   ConversationActorMap dynamicActors;
-
-                   if (e.action.conversation.baseObjectDynamicActorIdx > 0)
-                       dynamicActors[e.action.conversation.baseObjectDynamicActorIdx - 1] = baseObject->GetGUID();
-
                     Conversation* conversation = Conversation::CreateConversation(e.action.conversation.id, playerTarget,
-                        *playerTarget, playerTarget->GetGUID(), nullptr, dynamicActors);
+                        *playerTarget, playerTarget->GetGUID(), nullptr);
                     if (!conversation)
                         TC_LOG_WARN("scripts.ai", "SmartScript::ProcessAction:: SMART_ACTION_CREATE_CONVERSATION: id %u, baseObject %s, target %s - failed to create conversation",
                             e.action.conversation.id, !baseObject ? "" : baseObject->GetName().c_str(), playerTarget->GetName().c_str());

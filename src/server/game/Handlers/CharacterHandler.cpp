@@ -439,6 +439,7 @@ void WorldSession::HandleCharEnum(CharacterDatabaseQueryHolder* holder)
         raceUnlock.HasAchievement = requirement.second.AchievementId != 0
             && (sWorld->getBoolConfig(CONFIG_CHARACTER_CREATING_DISABLE_ALLIED_RACE_ACHIEVEMENT_REQUIREMENT)
                 /* || HasAccountAchievement(requirement.second.AchievementId)*/);
+        //raceUnlock.HasAchievement = requirement.second.AchievementId == 0;                              //Stitch Races Alli�es Activ�es par d�faut (by Galathil)
         charEnum.RaceUnlockData.push_back(raceUnlock);
     }
 
@@ -1172,8 +1173,6 @@ void WorldSession::HandlePlayerLogin(LoginQueryHolder* holder)
     pCurrChar->RemoveAurasWithInterruptFlags(SpellAuraInterruptFlags::Login);
 
     pCurrChar->SendInitialPacketsAfterAddToMap();
-
-    pCurrChar->UpdateReviveBattlePetCooldown();
 
     CharacterDatabasePreparedStatement* stmt = CharacterDatabase.GetPreparedStatement(CHAR_UPD_CHAR_ONLINE);
     stmt->setUInt64(0, pCurrChar->GetGUID().GetCounter());

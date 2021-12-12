@@ -433,6 +433,9 @@ class TC_GAME_API Spell
         GameObject* SearchSpellFocus();
 
         SpellCastResult prepare(SpellCastTargets const& targets, AuraEffect const* triggeredByAura = nullptr);
+        SpellCastResult prepare2(SpellCastTargets const& targets, AuraEffect const* triggeredByAura = nullptr);
+        //void prepare(SpellCastTargets const& targets, AuraEffect const* triggeredByAura = nullptr);
+        //void prepare2(SpellCastTargets const& targets, AuraEffect const* triggeredByAura = nullptr);
         void cancel();
         void update(uint32 difftime);
         void cast(bool skipCheck = false);

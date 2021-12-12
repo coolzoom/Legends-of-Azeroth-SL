@@ -30,7 +30,11 @@
 #include "ScriptMgr.h"
 #include "Vehicle.h"
 
+
 SmartAI::SmartAI(Creature* creature, uint32 scriptId) : CreatureAI(creature, scriptId), _charmed(false), _followCreditType(0), _followArrivedTimer(0), _followCredit(0), _followArrivedEntry(0), _followDistance(0.f), _followAngle(0.f),
+
+//SmartAI::SmartAI(Creature* creature, uint32 scriptId) : CreatureAI(creature, scriptId), mIsCharmed(false), mFollowCreditType(0), mFollowArrivedTimer(0), mFollowCredit(0), mFollowArrivedEntry(0), mFollowDist(0.f), mFollowAngle(0.f),
+
     _escortState(SMART_ESCORT_NONE), _escortNPCFlags(0), _escortInvokerCheckTimer(1000), _currentWaypointNode(0), _waypointReached(false), _waypointPauseTimer(0), _waypointPauseForced(false), _repeatWaypointPath(false),
     _OOCReached(false), _waypointPathEnded(false), _run(true), _evadeDisabled(false), _canAutoAttack(true), _canCombatMove(true), _invincibilityHPLevel(0), _despawnTime(0), _despawnState(0), _vehicleConditionsTimer(0),
     _gossipReturn(false), _escortQuestId(0)
@@ -671,7 +675,11 @@ void SmartAI::OnCharmed(bool /*isNew*/)
             EndPath(true);
     }
 
+
+    //_charmed = charmed;
+
     _charmed = charmed;
+
 
     if (!charmed && !me->IsInEvadeMode())
     {
@@ -716,8 +724,15 @@ ObjectGuid SmartAI::GetGUID(int32 /*id*/) const
 
 void SmartAI::SetRun(bool run)
 {
+    if (run == _run)
+        return;
+
     me->SetWalk(!run);
+
     _run = run;
+
+    //mRun = run;
+
     for (auto& node : _path.nodes)
         node.moveType = run ? WAYPOINT_MOVE_TYPE_RUN : WAYPOINT_MOVE_TYPE_WALK;
 }

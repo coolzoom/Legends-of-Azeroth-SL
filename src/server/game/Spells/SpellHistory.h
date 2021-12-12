@@ -104,8 +104,8 @@ public:
     }
 
     void AddCooldown(uint32 spellId, uint32 itemId, Clock::time_point cooldownEnd, uint32 categoryId, Clock::time_point categoryEnd, bool onHold = false);
-    void ModifyCooldown(uint32 spellId, Duration cooldownMod, bool withoutCategoryCooldown = false);
-    void ModifyCooldown(SpellInfo const* spellInfo, Duration cooldownMod, bool withoutCategoryCooldown = false);
+    void ModifyCooldown(uint32 spellId, Duration cooldownMod);
+    void ModifyCooldown(SpellInfo const* spellInfo, Duration cooldownMod);
     void ResetCooldown(uint32 spellId, bool update = false);
     void ResetCooldown(CooldownStorageType::iterator& itr, bool update = false);
     template<typename Predicate>
@@ -132,8 +132,6 @@ public:
     bool HasCooldown(SpellInfo const* spellInfo, uint32 itemId = 0, bool ignoreCategoryCooldown = false) const;
     bool HasCooldown(uint32 spellId, uint32 itemId = 0, bool ignoreCategoryCooldown = false) const;
     Duration GetRemainingCooldown(SpellInfo const* spellInfo) const;
-    Duration GetRemainingCategoryCooldown(uint32 categoryId) const;
-    Duration GetRemainingCategoryCooldown(SpellInfo const* spellInfo) const;
 
     // School lockouts
     void LockSpellSchool(SpellSchoolMask schoolMask, Duration lockoutTime);
@@ -148,7 +146,8 @@ public:
     bool HasCharge(uint32 chargeCategoryId) const;
     int32 GetMaxCharges(uint32 chargeCategoryId) const;
     int32 GetChargeRecoveryTime(uint32 chargeCategoryId) const;
-
+    void ForceSendSpellCharges();
+    void ForceSendSpellCharge(SpellCategoryEntry const* chargeCategoryEntry);
     // Global cooldown
     bool HasGlobalCooldown(SpellInfo const* spellInfo) const;
     void AddGlobalCooldown(SpellInfo const* spellInfo, Duration duration);
@@ -159,7 +158,7 @@ public:
 
 private:
     Player* GetPlayerOwner() const;
-    void ModifySpellCooldown(uint32 spellId, Duration cooldownMod, bool withoutCategoryCooldown = false);
+    void ModifySpellCooldown(uint32 spellId, Duration cooldownMod);
     void SendClearCooldowns(std::vector<int32> const& cooldowns) const;
     CooldownStorageType::iterator EraseCooldown(CooldownStorageType::iterator itr)
     {
