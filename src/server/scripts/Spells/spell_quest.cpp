@@ -700,7 +700,7 @@ enum Quest12851Data
     SPELL_FROSTGIANT_CREDIT = 58184,
     SPELL_FROSTWORG_CREDIT  = 58183,
     SPELL_IMMOLATION        = 54690,
-    SPELL_ABLAZE            = 54683,
+    SPELL_ABLAZE            = 54683
 };
 
 class spell_q12851_going_bearback : public SpellScriptLoader
@@ -1029,11 +1029,11 @@ class spell_q12805_lifeblood_dummy : public SpellScriptLoader
  */
 enum BattleStandard
 {
-    NPC_KING_OF_THE_MOUNTAINT_KC         = 31766,
     SPELL_PLANT_HORDE_BATTLE_STANDARD    = 59643,
     SPELL_HORDE_BATTLE_STANDARD_STATE    = 59642,
     SPELL_ALLIANCE_BATTLE_STANDARD_STATE = 4339,
-    SPELL_JUMP_ROCKET_BLAST              = 4340
+    SPELL_JUMP_ROCKET_BLAST              = 4340,
+    NPC_KING_OF_THE_MOUNTAINT_KC         = 31766
 };
 
 class spell_q13280_13283_plant_battle_standard : public SpellScript
@@ -1067,6 +1067,13 @@ class spell_q13280_13283_plant_battle_standard : public SpellScript
 class spell_q13280_13283_jump_jets : public SpellScript
 {
     PrepareSpellScript(spell_q13280_13283_jump_jets);
+            void HandleDummy(SpellEffIndex /*effIndex*/)
+            {
+                Unit* caster = GetCaster();
+                if (caster->IsVehicle())
+                    if (Unit* player = caster->GetVehicleKit()->GetPassenger(0))
+                         player->ToPlayer()->KilledMonsterCredit(NPC_KING_OF_THE_MOUNTAINT_KC);
+            }
 
     void HandleCast()
     {
@@ -1975,7 +1982,7 @@ class spell_q13086_cannons_target : public SpellScriptLoader
 
             bool Validate(SpellInfo const* spellInfo) override
             {
-                return !spellInfo->GetEffects().empty()
+      return !spellInfo->GetEffects().empty()
                     && ValidateSpellInfo({ static_cast<uint32>(spellInfo->GetEffect(EFFECT_0).CalcValue()) });
             }
 
@@ -3004,6 +3011,93 @@ class spell_q14386_call_attack_mastiffs : public SpellScript
         OnEffectHit += SpellEffectFn(spell_q14386_call_attack_mastiffs::HandleEffect, EFFECT_1, SPELL_EFFECT_SEND_EVENT);
     }
 };
+
+enum ThatsAbominable
+{
+    QUEST_THATS_ABOMINABLE                = 13264,
+
+    NPC_ICY_GHOUL                         = 31142,
+    NPC_RISEN_ALLIANCE_SOLDIERS           = 31205,
+    NPC_VICIOUS_GEIST                     = 31147,
+    NPC_RENIMATED_ABOMINATION             = 31692,
+
+    SPELL_ICY_GHOUL_CREDIT                = 59591, // Credit for Icy Ghoul
+    SPELL_VICIOUS_GEISTS_CREDIT           = 60042, // Credit for Vicious Geists
+    SPELL_RISEN_ALLIANCE_SOLDIERS_CREDIT  = 60040, // Credit for Risen Alliance Soldiers
+};
+
+class spell_q13264_thats_abominable : public SpellScriptLoader
+{
+    public:
+        spell_q13264_thats_abominable() : SpellScriptLoader("spell_q13264_thats_abominable") { }
+
+        class spell_q13264_thats_abominable_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(spell_q13264_thats_abominable_SpellScript);
+
+            bool Validate(SpellInfo const* /*spellInfo*/) override
+            {
+                return ValidateSpellInfo(
+                {
+                    SPELL_ICY_GHOUL_CREDIT,
+                    SPELL_VICIOUS_GEISTS_CREDIT,
+                    SPELL_RISEN_ALLIANCE_SOLDIERS_CREDIT,
+                });
+            }
+
+            void HandleKnockBack(SpellEffIndex effIndex)
+            {
+                PreventHitDefaultEffect(effIndex);
+
+                if (Creature* creature = GetHitCreature())
+                    if (Unit* charmer = GetCaster()->GetCharmerOrOwner())
+                        if (Player* player = charmer->ToPlayer())
+                            if (player->GetQuestStatus(QUEST_THATS_ABOMINABLE) == QUEST_STATUS_INCOMPLETE)
+                                if (GiveCreditIfValid(player, creature))
+                                    creature->KillSelf();
+            }
+
+            bool GiveCreditIfValid(Player* player, Creature* creature)
+            {
+                uint32 entry = creature->GetEntry();
+
+                switch(entry)
+                {
+                    case NPC_ICY_GHOUL:
+                        player->CastSpell(player, SPELL_ICY_GHOUL_CREDIT, true);
+                        return true;
+                    case NPC_VICIOUS_GEIST:
+                        player->CastSpell(player, SPELL_VICIOUS_GEISTS_CREDIT, true);
+                        return true;
+                    case NPC_RISEN_ALLIANCE_SOLDIERS:
+                        player->CastSpell(player, SPELL_RISEN_ALLIANCE_SOLDIERS_CREDIT, true);
+                        return true;
+                }
+
+                return false;
+            }
+
+            void HandleScript(SpellEffIndex /*effIndex*/)
+            {
+                if (Creature* creature = GetCaster()->ToCreature()) {
+                    creature->KillSelf();
+                    creature->DespawnOrUnsummon();
+                }
+            }
+
+            void Register() override
+            {
+                OnEffectHitTarget += SpellEffectFn(spell_q13264_thats_abominable_SpellScript::HandleKnockBack, EFFECT_1, SPELL_EFFECT_KNOCK_BACK);
+                OnEffectHitTarget += SpellEffectFn(spell_q13264_thats_abominable_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCRIPT_EFFECT);
+            }
+        };
+
+        SpellScript* GetSpellScript() const override
+        {
+            return new spell_q13264_thats_abominable_SpellScript();
+        }
+};
+
 void AddSC_quest_spell_scripts()
 {
     new spell_q55_sacred_cleansing();
@@ -3081,4 +3175,5 @@ void AddSC_quest_spell_scripts()
     new spell_q11306_failed_mix_43376();
     new spell_q11306_failed_mix_43378();
     RegisterSpellScript(spell_q14386_call_attack_mastiffs);
+    new spell_q13264_thats_abominable();
 }
