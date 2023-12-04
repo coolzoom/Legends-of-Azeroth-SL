@@ -1357,6 +1357,7 @@ void ExtractGameTables()
         { 3999263, "ChanceToMeleeCritBase.txt" },
         { 3999264, "ChanceToSpellCritBase.txt" },
         { 3999265, "ChanceToSpellCrit.txt" }
+        //xp.txt
     };
 
     uint32 count = 0;

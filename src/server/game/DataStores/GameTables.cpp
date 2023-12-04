@@ -132,7 +132,7 @@ void LoadGameTables(std::string const& dataPath)
     LOAD_GT(sRegenMPPerSptGameTable, "RegenMPPerSpt.txt");
     LOAD_GT(sShieldBlockRegularGameTable, "ShieldBlockRegular.txt");
     LOAD_GT(sSpellScalingGameTable, "SpellScaling.txt");
-    LOAD_GT(sXpGameTable, "xp.txt");
+    //LOAD_GT(sXpGameTable, "xp.txt");
 
 #undef LOAD_GT
 
