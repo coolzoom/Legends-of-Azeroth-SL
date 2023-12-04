@@ -26,6 +26,9 @@
 #include <boost/asio/ssl/stream.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 char const* CASC::HumanReadableCASCError(uint32 error)
 {
@@ -161,10 +164,21 @@ CASC::Storage::Storage(HANDLE handle) : _handle(handle)
 {
 }
 
+Optional<std::string> ReadLocalFile(const std::string& filepath) {
+    std::ifstream file(filepath);
+    if (!file.is_open()) {
+        return {};
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    return buffer.str();
+}
+
 bool CASC::Storage::LoadOnlineTactKeys()
 {
     // attempt to download only once, not every storage opening
-    static Optional<std::string> const tactKeys = DownloadFile("raw.githubusercontent.com", 443, "/wowdev/TACTKeys/master/WoW.txt");
+    //static Optional<std::string> const tactKeys = DownloadFile("raw.githubusercontent.com", 443, "/wowdev/TACTKeys/master/WoW.txt");
+    static Optional<std::string> const tactKeys = ReadLocalFile("WoW.txt");
 
     return tactKeys && CascImportKeysFromString(_handle, tactKeys->c_str());
 }
