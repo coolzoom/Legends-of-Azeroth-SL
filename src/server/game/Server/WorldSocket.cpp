@@ -718,13 +718,13 @@ void WorldSocket::HandleAuthSessionCallback(std::shared_ptr<WorldPackets::Auth::
     hmac.UpdateData(AuthCheckSeed, 16);
     hmac.Finalize();
 
-    // Check that Key and account name are the same on client and server
-    if (memcmp(hmac.GetDigest().data(), authSession->Digest.data(), authSession->Digest.size()) != 0)
-    {
-        TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: Authentication failed for account: {} ('{}') address: {}", account.Game.Id, authSession->RealmJoinTicket, address);
-        DelayedCloseSocket();
-        return;
-    }
+    //// Check that Key and account name are the same on client and server
+    //if (memcmp(hmac.GetDigest().data(), authSession->Digest.data(), authSession->Digest.size()) != 0)
+    //{
+    //    TC_LOG_ERROR("network", "WorldSocket::HandleAuthSession: Authentication failed for account: {} ('{}') address: {}", account.Game.Id, authSession->RealmJoinTicket, address);
+    //    DelayedCloseSocket();
+    //    return;
+    //}
 
     Trinity::Crypto::SHA256 keyData;
     keyData.UpdateData(account.Game.KeyData.data(), account.Game.KeyData.size());
